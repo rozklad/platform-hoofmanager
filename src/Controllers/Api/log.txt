@@ -1,0 +1,721 @@
+Sanatorium\Hoofmanager\Models\House::__set_state(array(
+   'table' => 'houses',
+   'guarded' => 
+  array (
+    0 => 'id',
+  ),
+   'with' => 
+  array (
+    0 => 'values.attribute',
+    1 => 'items',
+  ),
+   'appends' => 
+  array (
+    0 => 'label',
+  ),
+   'connection' => NULL,
+   'primaryKey' => 'id',
+   'perPage' => 15,
+   'incrementing' => true,
+   'timestamps' => true,
+   'attributes' => 
+  array (
+    'id' => 5,
+    'cattle_number' => '123445',
+    'created_at' => '2015-09-10 11:16:37',
+    'updated_at' => '2015-09-10 11:16:37',
+    'address_line_1' => 'Ulice dlouhá 5',
+    'address_line_2' => '520 00, Cheb',
+    'company_name' => 'Chebská první skotová',
+  ),
+   'original' => 
+  array (
+    'id' => 5,
+    'cattle_number' => '123445',
+    'created_at' => '2015-09-10 11:16:37',
+    'updated_at' => '2015-09-10 11:16:37',
+  ),
+   'relations' => 
+  array (
+    'values' => 
+    Illuminate\Database\Eloquent\Collection::__set_state(array(
+       'items' => 
+      array (
+        0 => 
+        Platform\Attributes\Models\Value::__set_state(array(
+           'table' => 'attribute_values',
+           'valueKey' => 'value',
+           'attributeRelation' => 'attribute',
+           'entityRelation' => 'entity',
+           'connection' => NULL,
+           'primaryKey' => 'id',
+           'perPage' => 15,
+           'incrementing' => true,
+           'timestamps' => true,
+           'attributes' => 
+          array (
+            'id' => 11,
+            'attribute_id' => 4,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => 'Ulice dlouhá 5',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'original' => 
+          array (
+            'id' => 11,
+            'attribute_id' => 4,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => 'Ulice dlouhá 5',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'relations' => 
+          array (
+            'attribute' => 
+            Platform\Attributes\Models\Attribute::__set_state(array(
+               'table' => 'attributes',
+               'fillable' => 
+              array (
+                0 => 'name',
+                1 => 'slug',
+                2 => 'type',
+                3 => 'enabled',
+                4 => 'options',
+                5 => 'namespace',
+                6 => 'validation',
+                7 => 'description',
+              ),
+               'attributeKey' => 'slug',
+               'valueRelation' => 'values',
+               'connection' => NULL,
+               'primaryKey' => 'id',
+               'perPage' => 15,
+               'incrementing' => true,
+               'timestamps' => true,
+               'attributes' => 
+              array (
+                'id' => 4,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'address_line_1',
+                'name' => 'Adresa - první řádek',
+                'description' => 'První řádek adresy',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:55:30',
+                'updated_at' => '2015-09-12 13:55:30',
+              ),
+               'original' => 
+              array (
+                'id' => 4,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'address_line_1',
+                'name' => 'Adresa - první řádek',
+                'description' => 'První řádek adresy',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:55:30',
+                'updated_at' => '2015-09-12 13:55:30',
+              ),
+               'relations' => 
+              array (
+              ),
+               'hidden' => 
+              array (
+              ),
+               'visible' => 
+              array (
+              ),
+               'appends' => 
+              array (
+              ),
+               'guarded' => 
+              array (
+                0 => '*',
+              ),
+               'dates' => 
+              array (
+              ),
+               'dateFormat' => NULL,
+               'casts' => 
+              array (
+              ),
+               'touches' => 
+              array (
+              ),
+               'observables' => 
+              array (
+              ),
+               'with' => 
+              array (
+              ),
+               'morphClass' => NULL,
+               'exists' => true,
+            )),
+          ),
+           'hidden' => 
+          array (
+          ),
+           'visible' => 
+          array (
+          ),
+           'appends' => 
+          array (
+          ),
+           'fillable' => 
+          array (
+          ),
+           'guarded' => 
+          array (
+            0 => '*',
+          ),
+           'dates' => 
+          array (
+          ),
+           'dateFormat' => NULL,
+           'casts' => 
+          array (
+          ),
+           'touches' => 
+          array (
+          ),
+           'observables' => 
+          array (
+          ),
+           'with' => 
+          array (
+          ),
+           'morphClass' => NULL,
+           'exists' => true,
+        )),
+        1 => 
+        Platform\Attributes\Models\Value::__set_state(array(
+           'table' => 'attribute_values',
+           'valueKey' => 'value',
+           'attributeRelation' => 'attribute',
+           'entityRelation' => 'entity',
+           'connection' => NULL,
+           'primaryKey' => 'id',
+           'perPage' => 15,
+           'incrementing' => true,
+           'timestamps' => true,
+           'attributes' => 
+          array (
+            'id' => 12,
+            'attribute_id' => 5,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => '520 00, Cheb',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'original' => 
+          array (
+            'id' => 12,
+            'attribute_id' => 5,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => '520 00, Cheb',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'relations' => 
+          array (
+            'attribute' => 
+            Platform\Attributes\Models\Attribute::__set_state(array(
+               'table' => 'attributes',
+               'fillable' => 
+              array (
+                0 => 'name',
+                1 => 'slug',
+                2 => 'type',
+                3 => 'enabled',
+                4 => 'options',
+                5 => 'namespace',
+                6 => 'validation',
+                7 => 'description',
+              ),
+               'attributeKey' => 'slug',
+               'valueRelation' => 'values',
+               'connection' => NULL,
+               'primaryKey' => 'id',
+               'perPage' => 15,
+               'incrementing' => true,
+               'timestamps' => true,
+               'attributes' => 
+              array (
+                'id' => 5,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'address_line_2',
+                'name' => 'Adresa - druhý řádek',
+                'description' => 'Druhý řádek adresy',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:56:10',
+                'updated_at' => '2015-09-12 13:56:10',
+              ),
+               'original' => 
+              array (
+                'id' => 5,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'address_line_2',
+                'name' => 'Adresa - druhý řádek',
+                'description' => 'Druhý řádek adresy',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:56:10',
+                'updated_at' => '2015-09-12 13:56:10',
+              ),
+               'relations' => 
+              array (
+              ),
+               'hidden' => 
+              array (
+              ),
+               'visible' => 
+              array (
+              ),
+               'appends' => 
+              array (
+              ),
+               'guarded' => 
+              array (
+                0 => '*',
+              ),
+               'dates' => 
+              array (
+              ),
+               'dateFormat' => NULL,
+               'casts' => 
+              array (
+              ),
+               'touches' => 
+              array (
+              ),
+               'observables' => 
+              array (
+              ),
+               'with' => 
+              array (
+              ),
+               'morphClass' => NULL,
+               'exists' => true,
+            )),
+          ),
+           'hidden' => 
+          array (
+          ),
+           'visible' => 
+          array (
+          ),
+           'appends' => 
+          array (
+          ),
+           'fillable' => 
+          array (
+          ),
+           'guarded' => 
+          array (
+            0 => '*',
+          ),
+           'dates' => 
+          array (
+          ),
+           'dateFormat' => NULL,
+           'casts' => 
+          array (
+          ),
+           'touches' => 
+          array (
+          ),
+           'observables' => 
+          array (
+          ),
+           'with' => 
+          array (
+          ),
+           'morphClass' => NULL,
+           'exists' => true,
+        )),
+        2 => 
+        Platform\Attributes\Models\Value::__set_state(array(
+           'table' => 'attribute_values',
+           'valueKey' => 'value',
+           'attributeRelation' => 'attribute',
+           'entityRelation' => 'entity',
+           'connection' => NULL,
+           'primaryKey' => 'id',
+           'perPage' => 15,
+           'incrementing' => true,
+           'timestamps' => true,
+           'attributes' => 
+          array (
+            'id' => 13,
+            'attribute_id' => 6,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => 'Chebská první skotová',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'original' => 
+          array (
+            'id' => 13,
+            'attribute_id' => 6,
+            'entity_type' => 'Sanatorium\\Hoofmanager\\Models\\House',
+            'entity_id' => 5,
+            'value' => 'Chebská první skotová',
+            'created_at' => '2015-09-12 13:58:01',
+            'updated_at' => '2015-09-12 13:58:01',
+          ),
+           'relations' => 
+          array (
+            'attribute' => 
+            Platform\Attributes\Models\Attribute::__set_state(array(
+               'table' => 'attributes',
+               'fillable' => 
+              array (
+                0 => 'name',
+                1 => 'slug',
+                2 => 'type',
+                3 => 'enabled',
+                4 => 'options',
+                5 => 'namespace',
+                6 => 'validation',
+                7 => 'description',
+              ),
+               'attributeKey' => 'slug',
+               'valueRelation' => 'values',
+               'connection' => NULL,
+               'primaryKey' => 'id',
+               'perPage' => 15,
+               'incrementing' => true,
+               'timestamps' => true,
+               'attributes' => 
+              array (
+                'id' => 6,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'company_name',
+                'name' => 'Název firmy',
+                'description' => 'Název chovu',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:56:48',
+                'updated_at' => '2015-09-12 13:56:48',
+              ),
+               'original' => 
+              array (
+                'id' => 6,
+                'namespace' => 'sanatorium/hoofmanager.houses',
+                'slug' => 'company_name',
+                'name' => 'Název firmy',
+                'description' => 'Název chovu',
+                'type' => 'input',
+                'options' => '',
+                'validation' => NULL,
+                'enabled' => 1,
+                'created_at' => '2015-09-12 13:56:48',
+                'updated_at' => '2015-09-12 13:56:48',
+              ),
+               'relations' => 
+              array (
+              ),
+               'hidden' => 
+              array (
+              ),
+               'visible' => 
+              array (
+              ),
+               'appends' => 
+              array (
+              ),
+               'guarded' => 
+              array (
+                0 => '*',
+              ),
+               'dates' => 
+              array (
+              ),
+               'dateFormat' => NULL,
+               'casts' => 
+              array (
+              ),
+               'touches' => 
+              array (
+              ),
+               'observables' => 
+              array (
+              ),
+               'with' => 
+              array (
+              ),
+               'morphClass' => NULL,
+               'exists' => true,
+            )),
+          ),
+           'hidden' => 
+          array (
+          ),
+           'visible' => 
+          array (
+          ),
+           'appends' => 
+          array (
+          ),
+           'fillable' => 
+          array (
+          ),
+           'guarded' => 
+          array (
+            0 => '*',
+          ),
+           'dates' => 
+          array (
+          ),
+           'dateFormat' => NULL,
+           'casts' => 
+          array (
+          ),
+           'touches' => 
+          array (
+          ),
+           'observables' => 
+          array (
+          ),
+           'with' => 
+          array (
+          ),
+           'morphClass' => NULL,
+           'exists' => true,
+        )),
+      ),
+    )),
+    'items' => 
+    Illuminate\Database\Eloquent\Collection::__set_state(array(
+       'items' => 
+      array (
+        0 => 
+        Sanatorium\Hoofmanager\Models\Item::__set_state(array(
+           'table' => 'items',
+           'guarded' => 
+          array (
+          ),
+           'with' => 
+          array (
+            0 => 'values.attribute',
+          ),
+           'connection' => NULL,
+           'primaryKey' => 'id',
+           'perPage' => 15,
+           'incrementing' => true,
+           'timestamps' => true,
+           'attributes' => 
+          array (
+            'id' => 13,
+            'item_number' => '111',
+            'created_at' => '2015-09-12 10:31:07',
+            'updated_at' => '2015-09-14 12:11:29',
+          ),
+           'original' => 
+          array (
+            'id' => 13,
+            'item_number' => '111',
+            'created_at' => '2015-09-12 10:31:07',
+            'updated_at' => '2015-09-14 12:11:29',
+            'pivot_house_id' => 5,
+            'pivot_item_id' => 13,
+          ),
+           'relations' => 
+          array (
+            'pivot' => 
+            Illuminate\Database\Eloquent\Relations\Pivot::__set_state(array(
+               'parent' => 
+              Sanatorium\Hoofmanager\Models\House::__set_state(array(
+                 'table' => 'houses',
+                 'guarded' => 
+                array (
+                  0 => 'id',
+                ),
+                 'with' => 
+                array (
+                  0 => 'values.attribute',
+                  1 => 'items',
+                  2 => 'values.attribute',
+                ),
+                 'appends' => 
+                array (
+                  0 => 'label',
+                ),
+                 'connection' => NULL,
+                 'primaryKey' => 'id',
+                 'perPage' => 15,
+                 'incrementing' => true,
+                 'timestamps' => true,
+                 'attributes' => 
+                array (
+                ),
+                 'original' => 
+                array (
+                ),
+                 'relations' => 
+                array (
+                ),
+                 'hidden' => 
+                array (
+                ),
+                 'visible' => 
+                array (
+                ),
+                 'fillable' => 
+                array (
+                ),
+                 'dates' => 
+                array (
+                ),
+                 'dateFormat' => NULL,
+                 'casts' => 
+                array (
+                ),
+                 'touches' => 
+                array (
+                ),
+                 'observables' => 
+                array (
+                ),
+                 'morphClass' => NULL,
+                 'exists' => false,
+                 'valueRelation' => 'values',
+              )),
+               'foreignKey' => 'house_id',
+               'otherKey' => 'item_id',
+               'guarded' => 
+              array (
+              ),
+               'connection' => NULL,
+               'table' => 'house_items',
+               'primaryKey' => 'id',
+               'perPage' => 15,
+               'incrementing' => true,
+               'timestamps' => false,
+               'attributes' => 
+              array (
+                'house_id' => 5,
+                'item_id' => 13,
+              ),
+               'original' => 
+              array (
+                'house_id' => 5,
+                'item_id' => 13,
+              ),
+               'relations' => 
+              array (
+              ),
+               'hidden' => 
+              array (
+              ),
+               'visible' => 
+              array (
+              ),
+               'appends' => 
+              array (
+              ),
+               'fillable' => 
+              array (
+              ),
+               'dates' => 
+              array (
+              ),
+               'dateFormat' => NULL,
+               'casts' => 
+              array (
+              ),
+               'touches' => 
+              array (
+              ),
+               'observables' => 
+              array (
+              ),
+               'with' => 
+              array (
+              ),
+               'morphClass' => NULL,
+               'exists' => true,
+            )),
+            'values' => 
+            Illuminate\Database\Eloquent\Collection::__set_state(array(
+               'items' => 
+              array (
+              ),
+            )),
+          ),
+           'hidden' => 
+          array (
+          ),
+           'visible' => 
+          array (
+          ),
+           'appends' => 
+          array (
+          ),
+           'fillable' => 
+          array (
+          ),
+           'dates' => 
+          array (
+          ),
+           'dateFormat' => NULL,
+           'casts' => 
+          array (
+          ),
+           'touches' => 
+          array (
+          ),
+           'observables' => 
+          array (
+          ),
+           'morphClass' => NULL,
+           'exists' => true,
+           'valueRelation' => 'values',
+        )),
+      ),
+    )),
+  ),
+   'hidden' => 
+  array (
+  ),
+   'visible' => 
+  array (
+  ),
+   'fillable' => 
+  array (
+  ),
+   'dates' => 
+  array (
+  ),
+   'dateFormat' => NULL,
+   'casts' => 
+  array (
+  ),
+   'touches' => 
+  array (
+  ),
+   'observables' => 
+  array (
+  ),
+   'morphClass' => NULL,
+   'exists' => true,
+   'valueRelation' => 'values',
+))
+5
