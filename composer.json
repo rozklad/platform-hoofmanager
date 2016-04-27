@@ -5,16 +5,7 @@
 	"authors": [
 		{
 			"name": "Sanatorium",
-			"email": "info@sanatoriu.ninja"
-		},
-		{
-			"name": "rozklad",
-			"email": "jan.rozklad@gmail.com",
-			"homepage": "http://rozklad.me"
-		},
-		{
-			"name": "mattluk",
-			"email": "matejlukas12@gmail.com"
+			"email": "info@sanatorium.ninja"
 		}
 	],
 	"repositories": [
@@ -26,7 +17,8 @@
 	"require": {
 		"php": ">=5.4.0",
 		"cartalyst/composer-installers": "1.2.*",
-		"platform/foundation": "2.0.*|3.0.*"
+		"illuminate/support": "~5.0",
+		"platform/foundation": "2.0.*"
 	},
 	"autoload": {
 		"classmap": [

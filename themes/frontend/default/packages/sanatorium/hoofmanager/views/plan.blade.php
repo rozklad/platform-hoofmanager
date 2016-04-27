@@ -19,6 +19,28 @@
 </style>
 @stop
 
+@section('scripts')
+
+<script>
+	
+	$(function(){
+
+		$('#print_house').change(function(){
+
+			var url = "{{ route('sanatorium.hoofmanager.plan.pdf.single')}}";
+
+			url = url.substr(0, url.indexOf('%'));
+
+			window.location.href = url + $(this).val();
+
+		});
+
+	});
+
+</script>
+
+@stop
+
 {{-- Page content --}}
 @section('page')
 
@@ -28,7 +50,23 @@
 
 <div class="row">
 
-<a href="{{ route('sanatorium.hoofmanager.plan.pdf') }}">Tisk</a>
+	<a href="{{ route('sanatorium.hoofmanager.plan.pdf.all') }}">Tisk všeho</a>
+
+	<select name="print_house" id="print_house">
+
+		<option value="">Vyberte chov pro tisk plánu</option>
+		
+		@foreach ( $houses as $house )
+
+		@if ( $house->cattle_number && $house->company_name )
+
+		<option value="{{ $house->id }}">{{ $house->cattle_number }} {{ $house->company_name }}</option>
+
+		@endif
+
+		@endforeach
+
+	</select>
 
 	<h2 class="card-header">
 

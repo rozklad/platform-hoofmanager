@@ -1,6 +1,7 @@
 <?php namespace Sanatorium\Hoofmanager\Controllers\Frontend;
 
 use Platform\Foundation\Controllers\Controller;
+use Sanatorium\Hoofmanager\Models\Vet;
 
 class HousesController extends Controller {
 
@@ -24,9 +25,33 @@ class HousesController extends Controller {
 		return $this->processForm('update', $id);
 	}
 
+	/**
+	 * Show the form for creating new houses.
+	 *
+	 * @return \Illuminate\View\View
+	 */
+	public function create()
+	{
+		return $this->showForm('create');
+	}
+
+	/**
+	 * Handle posting of the form for creating new houses.
+	 *
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function store()
+	{
+		return $this->processForm('create');
+	}
+
 	public function showForm($id = null)
 	{
 		$houses = app('sanatorium.hoofmanager.houses');
+
+		$items = app('sanatorium.hoofmanager.items');
+
+		$vet = Vet::getVet();
 
 		if ( $id ) 
 		{
@@ -34,9 +59,11 @@ class HousesController extends Controller {
 		} else 
 		{
 			$house = $houses->createModel();
+
+			$item = $items->createModel();
 		}
 
-		return view('sanatorium/hoofmanager::houses/form', compact('house'));
+		return view('sanatorium/hoofmanager::houses/form', compact('house', 'vet', 'item'));
 	}
 
 	/**
@@ -50,8 +77,22 @@ class HousesController extends Controller {
 	{
 		$this->houses = app('sanatorium.hoofmanager.houses');
 
+		$this->items = app('sanatorium.hoofmanager.items');
+
 		// Store the houses
-		list($messages) = $this->houses->store($id, request()->all());
+		list($messages, $actual_house) = $this->houses->store($id, request()->house);
+
+		foreach (request()->item as $item) {
+
+			if ( isset($item['item_number']) && $item['item_number'] != '' ) {
+
+				list($messages_item, $actual_item) = $this->items->store(null, $item);
+
+				$actual_item->houses()->save($actual_house);
+
+			}
+
+		} 
 
 		// Do we have any errors?
 		if ($messages->isEmpty())

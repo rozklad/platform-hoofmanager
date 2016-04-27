@@ -16,7 +16,99 @@
 
 	}
 
+	.twitter-typeahead {
+		width: 100%;
+	}
+
+	#items-search {
+		border: none;
+		border-bottom: 1px solid;
+		padding: 10px;
+	}
+
 </style>
+@stop
+
+{{-- Scripts --}}
+@section('scripts')
+<script type="text/javascript">
+	var substringMatcher = function(strs) {
+		return function findMatches(q, cb) {
+			var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+    	if (substrRegex.test(str)) {
+    		matches.push(str);
+    	}
+    });
+
+    cb(matches);
+};
+};
+
+var houses = <?= $houses ?>;
+
+var itemsPhp = [];
+
+for ( var i = 0; i < houses.length; i++) {
+
+	for ( var x = 0; x < houses[i].items.length; x++ ) {
+
+		if ( houses[i].company_name ) {
+
+			itemsPhp.push("# " + houses[i].items[x].item_number + " - " + houses[i].company_name);
+
+		} else {
+
+			itemsPhp.push("# " + houses[i].items[x].item_number);
+
+		}
+
+	}
+
+}
+
+//console.log(itemsPhp);
+
+$('#items-search').typeahead({
+	hint: true,
+	highlight: true,
+	minLength: 1
+},
+{
+	name: 'items',
+	source: substringMatcher(itemsPhp)
+});
+
+$('#items-search').bind('typeahead:select', function(ev, suggestion) {
+
+	var name = suggestion.substr(0, suggestion.indexOf(' #')); 
+
+	for ( var i = 0; i < itemsPhp.length; i++ ) {
+
+		if ( itemsPhp[i].company_name == name ) {
+
+			var url = "{{ route('sanatorium.hoofmanager.items.edit') }}";
+
+			url = url.substr(0, url.indexOf('%'));
+
+			window.location.href = url + itemsPhp[i].id;
+
+		}
+
+	}
+
+});
+
+</script>
 @stop
 
 {{-- Page content --}}
@@ -33,6 +125,8 @@
 		Zvířata
 
 	</h2>
+
+	<input id="items-search" type="text" placeholder="Vyhledat zvíře" style="width: 100%;">
 
 	<table class="table">
 
@@ -140,7 +234,7 @@
 
 				<td>
 
-				<?php $diseases_array = []; ?>
+					<?php $diseases_array = []; ?>
 
 					@foreach ( $item->examinations as $examination )
 
@@ -162,7 +256,7 @@
 
 				<td>
 
-				<?php $treatment_array = []; ?>
+					<?php $treatment_array = []; ?>
 
 					@foreach ( $item->examinations as $examination )
 

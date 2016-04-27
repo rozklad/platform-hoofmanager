@@ -165,7 +165,9 @@ return [
 
 				Route::get('plan', ['as' => 'sanatorium.hoofmanager.plan', 'uses' => 'HoofController@plan']);
 
-				Route::get('plan/pdf', ['as' => 'sanatorium.hoofmanager.plan.pdf', 'uses' => 'HoofController@pdf']);
+				Route::get('plan/pdf/all', ['as' => 'sanatorium.hoofmanager.plan.pdf.all', 'uses' => 'HoofController@pdfPlanAll']);
+
+				Route::get('plan/pdf/{id}', ['as' => 'sanatorium.hoofmanager.plan.pdf.single', 'uses' => 'HoofController@pdfPlanSingleHouse']);
 
 				Route::get('stats', ['as' => 'sanatorium.hoofmanager.stats', 'uses' => 'HoofController@stats']);
 
@@ -176,6 +178,10 @@ return [
 						Route::get('edit/{id}', ['as' => 'sanatorium.hoofmanager.houses.edit', 'uses' => 'HousesController@edit']);
 
 						Route::post('edit/{id}', ['as' => 'sanatorium.hoofmanager.houses.update', 'uses' => 'HousesController@update']);
+
+						Route::get('create', ['as' => 'sanatorium.hoofmanager.houses.create', 'uses' => 'HousesController@create']);
+
+						Route::post('create', ['as' => 'sanatorium.hoofmanager.houses.store', 'uses' => 'HousesController@store']);
 
 					});
 

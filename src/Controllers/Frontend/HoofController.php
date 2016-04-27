@@ -29,11 +29,13 @@ class HoofController extends Controller {
 
 		$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
 
-		$houses = $vet->with('examinations.item.houses')->get();
+		$houses = House::where('user_id', $vet->id)->get();
+
+		/*$houses = $vet->with('examinations.item.houses')->get();
 
 		$house_ids = $houses->lists('id');
 
-		$houses = House::whereIn('id', $house_ids)->get();
+		$houses = House::whereIn('id', $house_ids)->get();*/
 
 		return view('sanatorium/hoofmanager::index', compact('examinations', 'houses'));
 	}
@@ -47,11 +49,13 @@ class HoofController extends Controller {
 	{
 		$vet = Vet::getVet();
 
-		$houses = $vet->with('examinations.item.houses')->get();
+		/*$houses = $vet->with('examinations.item.houses')->get();
 
 		$houses_ids = $houses->lists('id');
 
-		$houses = House::whereIn('id', $houses_ids)->get();
+		$houses = House::whereIn('id', $houses_ids)->get();*/
+
+		$houses = House::where('user_id', $vet->id)->get();
 
 		$findings = app('sanatorium.hoofmanager.finding');
 
@@ -86,10 +90,12 @@ class HoofController extends Controller {
 			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
 		}
 
-		return view('sanatorium/hoofmanager::plan', compact('checks', 'plans'));
+		$houses = app('sanatorium.hoofmanager.houses')->get();
+
+		return view('sanatorium/hoofmanager::plan', compact('plans', 'houses'));
 	}
 
-	public function pdf()
+	public function pdfPlanAll()
 	{
 		$checks = app('sanatorium.hoofmanager.finding')->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
 
@@ -102,9 +108,28 @@ class HoofController extends Controller {
 			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
 		}
 
-		$pdf = PDF::loadView('pdf.plan', compact('checks', 'plans'));
+		$pdf = PDF::loadView('pdf.plan', compact('plans'));
 		
 		return $pdf->stream('plan.pdf');
+	}
+
+	public function pdfPlanSingleHouse($id)
+	{
+		$checks = app('sanatorium.hoofmanager.finding')->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
+
+		$examinations = app('sanatorium.hoofmanager.examination')->get();
+
+		$plans = [];
+
+		for ( $i=0; $i < count($checks); $i++ )
+		{
+			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
+		}
+
+		$pdf = PDF::loadView('pdf.single', compact('plans', 'id'));
+		
+		return $pdf->stream('single.pdf');
+
 	}
 
 	public function stats()
