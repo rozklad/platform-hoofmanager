@@ -108,6 +108,10 @@ class HoofController extends Controller {
 			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
 		}
 
+		// @TODO: better exceptions
+		if ( !class_exists('PDF') )
+			return null;
+
 		$pdf = PDF::loadView('pdf.plan', compact('plans'));
 		
 		return $pdf->stream('plan.pdf');
@@ -125,6 +129,10 @@ class HoofController extends Controller {
 		{
 			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
 		}
+
+		// @TODO: better exceptions
+		if ( !class_exists('PDF') )
+			return null;
 
 		$pdf = PDF::loadView('pdf.single', compact('plans', 'id'));
 		
@@ -144,6 +152,10 @@ class HoofController extends Controller {
 		$items = app('sanatorium.hoofmanager.items')->findAll();
 
 		$vet = Vet::getVet();
+
+		// @TODO: better exceptions
+		if ( !is_object($vet) )
+			return null;
 
 		$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
 
