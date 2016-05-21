@@ -3118,9 +3118,12 @@ examinations: [
 
 	public function __destruct()
 	{
+		$source = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+
 		$object = [
-			'source' 	=> $_SERVER['REMOTE_ADDR'],
-			'method'	=> $_SERVER['REQUEST_METHOD'],
+			'source' 	=> $source,
+			'method'	=> $method,
 
 			'call' 		=> Route::currentRouteName(),
 
