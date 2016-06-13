@@ -1,6 +1,6 @@
-@extends('layouts/default')
+@extends('layouts/default_sidebar')
 
-@section('sidenav')
+@section('sidebar')
 @parent
 @include('sanatorium/hoofmanager::partials/sidenav')
 @stop
@@ -47,10 +47,6 @@
 
 {{-- Page content --}}
 @section('page')
-
-</div>
-
-</div>
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 

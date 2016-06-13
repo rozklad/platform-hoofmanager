@@ -16,6 +16,7 @@ class CreateHousesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('cattle_number')->nullable();
+			$table->integer('house_id')->nullable();
 			$table->timestamps();
 		});
 	}

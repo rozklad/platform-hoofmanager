@@ -1,6 +1,6 @@
-@extends('layouts/default')
+@extends('layouts/default_sidebar')
 
-@section('sidenav')
+@section('sidebar')
 @parent
 @include('sanatorium/hoofmanager::partials/sidenav')
 @stop
@@ -113,10 +113,6 @@ $('#items-search').bind('typeahead:select', function(ev, suggestion) {
 
 {{-- Page content --}}
 @section('page')
-
-</div>
-
-</div>
 
 <div class="row">
 
