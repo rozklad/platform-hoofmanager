@@ -116,6 +116,7 @@
 
 				@if ( $finding->check_date != '0000-00-00 00:00:00')
 
+					@if ( is_object($plan->item) )
 				<?php $house = $plan->item->houses()->first(); ?>
 
 				<th>
@@ -127,11 +128,14 @@
 					</a>
 
 				</th>
+					@endif
+
 
 				@endif
 
 				@if ( $finding->check_date != '0000-00-00 00:00:00' )
 
+					@if ( is_object($plan->item) )
 				<th>
 
 					<a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $plan->item_id]) }}">
@@ -141,6 +145,7 @@
 					</a>
 
 				</th>
+					@endif
 
 				@endif
 
