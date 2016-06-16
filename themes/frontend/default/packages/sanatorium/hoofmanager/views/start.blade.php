@@ -23,9 +23,9 @@
 
 <div class="row">
 
-	<h2 class="card-header" id="houses">Getting started</h2>
-
 	<div class="col-md-12">
+
+		<h2 class="card-header" id="houses">Getting started</h2>
 
 		<p class="lead card-row" style="line-height: 1.5; letter-spacing: 1px;">
 
@@ -41,7 +41,7 @@
 
 			</a>
 
-			<a href="https://s3.amazonaws.com/fortrabbit/app/Hoof-Manager.apk" class="text-center">Manuál ke stažení</a>
+			<a href="https://s3.amazonaws.com/fortrabbit/app/Manual.doc" class="text-center">Manuál ke stažení</a>
 
 		</div>
 
