@@ -27,23 +27,21 @@
 
 	<div class="col-md-12">
 
-		<h4 class="card-row text-center" style="line-height: 1.5; letter-spacing: 1px;">
+		<p class="lead card-row" style="line-height: 1.5; letter-spacing: 1px;">
 
-			Vyvinuli jsme Hoof Manager na pomoc ošetřovatelům identifikovat, rychle zaznamenat a následně sledovat nemoci kopyt u skotu. Je součástí integrované strategie pro identifikaci, prevenci a záznam nemocí postihující kopyta skotu všech věkových kategorií. Kromě nemocí lze zaznamenávat i aplikovanou léčbu. Všechna nasbíraná data jsou přehledně dostupná ve webovém rozhraní.
+			Vyvinuli jsme Hoof Manager na pomoc ošetřovatelům identifikovat, rychle zaznamenat a následně sledovat nemoci kopyt u skotu. Je součástí integrované strategie pro identifikaci, prevenci a záznam nemocí postihující paznehty skotu všech věkových kategorií. Kromě nemocí lze zaznamenávat i aplikovanou léčbu. Všechna nasbíraná data jsou přehledně dostupná ve webovém rozhraní.
 
-		</h4>
+		</p>
 
 		<div class="image-wrapper text-center" style="padding-bottom: 15px;">
 
-			<img width="40%" src="{{ Asset::getUrl('standard/img/mockup.png') }}" alt="Mockup" style="display: block; margin-left: auto; margin-right:auto;">
+			<a class="text-center" href="https://s3.amazonaws.com/fortrabbit/app/Hoof-Manager.apk">
 
-			<a class="text-center" href="{{ Asset::getUrl('standard/app/Hoof-Manager.apk') }}">
-
-				<img width="15%;" src="{{ Asset::getUrl('standard/img/download.png') }}" alt="Download">
+				<img width="15%;" src="{{ Asset::getUrl('sanatorium/hoofmanager::android.png') }}" alt="Download">
 
 			</a>
 
-			<a href="{{ Asset::getUrl('standard/app/Manual.doc') }}" class="text-center">Manuál ke stažení</a>
+			<a href="https://s3.amazonaws.com/fortrabbit/app/Hoof-Manager.apk" class="text-center">Manuál ke stažení</a>
 
 		</div>
 
