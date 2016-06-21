@@ -145,11 +145,7 @@ class ItemsRepository implements ItemsRepositoryInterface {
 
 		// Prepare the submitted data
 		$data = $this->data->prepare($input);
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
+		
 		// Validate the submitted data
 		$messages = $this->validForUpdate($items, $data);
 
