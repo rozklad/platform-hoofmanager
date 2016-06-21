@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php namespace Sanatorium\Hoofmanager\Models;
 
 use Cartalyst\Attributes\EntityInterface;
@@ -128,4 +127,3 @@ class Finding extends Model implements EntityInterface {
 	}
 
 }
->>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
