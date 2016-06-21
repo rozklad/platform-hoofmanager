@@ -43,3 +43,11 @@ class ComposerAutoloaderInit7d6429ef5b50d8bc2f2fa017d2c629db
         return $loader;
     }
 }
+<<<<<<< HEAD
+=======
+
+function composerRequire7d6429ef5b50d8bc2f2fa017d2c629db($file)
+{
+    require $file;
+}
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935

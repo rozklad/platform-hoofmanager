@@ -24,20 +24,29 @@ return array(
     'Sanatorium\\Hoofmanager\\Controllers\\Admin\\ItemsController' => $baseDir . '/src/Controllers/Admin/ItemsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Admin\\PartsController' => $baseDir . '/src/Controllers/Admin/PartsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Admin\\SubpartsController' => $baseDir . '/src/Controllers/Admin/SubpartsController.php',
+<<<<<<< HEAD
     'Sanatorium\\Hoofmanager\\Controllers\\Admin\\TreatmentsController' => $baseDir . '/src/Controllers/Admin/TreatmentsController.php',
+=======
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
     'Sanatorium\\Hoofmanager\\Controllers\\Admin\\VetController' => $baseDir . '/src/Controllers/Admin/VetController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\ApiController' => $baseDir . '/src/Controllers/Api/ApiController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\DiseasesController' => $baseDir . '/src/Controllers/Api/DiseasesController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\ExaminationsController' => $baseDir . '/src/Controllers/Api/ExaminationsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\HousesController' => $baseDir . '/src/Controllers/Api/HousesController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\ItemsController' => $baseDir . '/src/Controllers/Api/ItemsController.php',
+<<<<<<< HEAD
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\TreatmentsController' => $baseDir . '/src/Controllers/Api/TreatmentsController.php',
+=======
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
     'Sanatorium\\Hoofmanager\\Controllers\\Api\\VetController' => $baseDir . '/src/Controllers/Api/VetController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\ApilogsController' => $baseDir . '/src/Controllers/Frontend/ApilogsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\DiseasesController' => $baseDir . '/src/Controllers/Frontend/DiseasesController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\ExaminationsController' => $baseDir . '/src/Controllers/Frontend/ExaminationsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\FindingsController' => $baseDir . '/src/Controllers/Frontend/FindingsController.php',
+<<<<<<< HEAD
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\HoofController' => $baseDir . '/src/Controllers/Frontend/HoofController.php',
+=======
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\HousesController' => $baseDir . '/src/Controllers/Frontend/HousesController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\ItemsController' => $baseDir . '/src/Controllers/Frontend/ItemsController.php',
     'Sanatorium\\Hoofmanager\\Controllers\\Frontend\\PartsController' => $baseDir . '/src/Controllers/Frontend/PartsController.php',

@@ -13,7 +13,13 @@
 namespace Composer\Autoload;
 
 /**
+<<<<<<< HEAD
  * ClassLoader implements a PSR-0, PSR-4 and classmap class loader.
+=======
+ * ClassLoader implements a PSR-0 class loader
+ *
+ * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
  *
  *     $loader = new \Composer\Autoload\ClassLoader();
  *
@@ -37,8 +43,11 @@ namespace Composer\Autoload;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Jordi Boggiano <j.boggiano@seld.be>
+<<<<<<< HEAD
  * @see    http://www.php-fig.org/psr/psr-0/
  * @see    http://www.php-fig.org/psr/psr-4/
+=======
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
  */
 class ClassLoader
 {
@@ -147,7 +156,11 @@ class ClassLoader
      * appending or prepending to the ones previously set for this namespace.
      *
      * @param string       $prefix  The prefix/namespace, with trailing '\\'
+<<<<<<< HEAD
      * @param array|string $paths   The PSR-4 base directories
+=======
+     * @param array|string $paths   The PSR-0 base directories
+>>>>>>> 434c7e6f18a18ec990cc7933cb97003437355935
      * @param bool         $prepend Whether to prepend the directories
      *
      * @throws \InvalidArgumentException
