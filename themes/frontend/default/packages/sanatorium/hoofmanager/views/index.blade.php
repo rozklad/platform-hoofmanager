@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @extends('layouts/default_sidebar')
 
 @section('sidebar')
