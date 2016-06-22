@@ -29,13 +29,15 @@ class HoofController extends Controller {
 
 		$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
 
-		$houses = House::where('user_id', $vet->id)->get();
+		if ( $vet->isAdmin() ) {
 
-		/*$houses = $vet->with('examinations.item.houses')->get();
+			$houses = House::all();
 
-		$house_ids = $houses->lists('id');
+		} else {
 
-		$houses = House::whereIn('id', $house_ids)->get();*/
+			$houses = House::where('user_id', $vet->id)->get();
+
+		}
 
 		return view('sanatorium/hoofmanager::index', compact('examinations', 'houses'));
 	}
@@ -53,31 +55,21 @@ class HoofController extends Controller {
 
 		$vet = Vet::getVet();
 
-		/*$houses = $vet->with('examinations.item.houses')->get();
+		if ( $vet->isAdmin() ) {
 
-		$houses_ids = $houses->lists('id');
+			$houses = House::all();
 
-		$houses = House::whereIn('id', $houses_ids)->get();*/
+		} else {
 
-		$houses = House::where('user_id', $vet->id)->get();
+			$houses = House::where('user_id', $vet->id)->get();
+
+		}
 
 		$findings = app('sanatorium.hoofmanager.finding');
 
 		$examinations = app('sanatorium.hoofmanager.examination');
 
-		$tests = $examinations->where('item_id', 49)->get();
-
 		$items = app('sanatorium.hoofmanager.items')->get();
-
-		$pole = [];
-
-		foreach ( $tests as $test ) {
-			array_push($pole, $findings->where('examination_id', $test->id)->get());
-		}
-
-		/*dd($pole);
-
-		dd($findings->where('examination_id', $test->id)->get());*/
 
 		return view('sanatorium/hoofmanager::animals', compact('houses', 'vet', 'items'));
 
@@ -154,21 +146,41 @@ class HoofController extends Controller {
 
 		$diseases = app('sanatorium.hoofmanager.diseases')->findAll();
 
-		$houses = House::where('user_id', $vet->id)->get();
+		if ( $vet->isAdmin() ) {
 
-		$items = Item::where('user_id', $vet->id)->get();
+			$houses = House::all();
+
+			$items = Item::all();
+
+		} else {
+
+			$houses = House::where('user_id', $vet->id)->get();
+
+			$items = Item::where('user_id', $vet->id)->get();
+
+		}
 
 		// @TODO: better exceptions
 		if ( !is_object($vet) )
 			return null;
 
-		$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
+		if ( $vet->isAdmin() ) {
 
-		$findings = Finding::whereHas('examination', function($q)  use ($vet) {
+			$examinations = Examination::all();
 
-			return $q->where('user_id', $vet->id);
+			$findings = Finding::all();
 
-		})->get();
+		} else {
+
+			$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
+
+			$findings = Finding::whereHas('examination', function($q)  use ($vet) {
+
+				return $q->where('user_id', $vet->id);
+
+			})->get();
+
+		}
 
 		$names = [];
 

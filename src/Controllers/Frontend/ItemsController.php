@@ -28,7 +28,15 @@ class ItemsController extends Controller {
 
 		$examinations = $examinations->where('item_id', $id)->get();
 
-		$houses = House::where('user_id', $vet->id)->get();
+		if ( $vet->isAdmin() ) {
+
+			$houses = House::all();
+
+		} else {
+
+			$houses = House::where('user_id', $vet->id)->get();
+
+		}
 
 		$diseases = app('sanatorium.hoofmanager.diseases')->findAll();
 
@@ -76,17 +84,6 @@ class ItemsController extends Controller {
 		}
 
 		return redirect()->back();
-		
-		/*if ( request()->has('collar') )
-		{
-
-			return $this->processFormItem('update', $id);
-
-		} else {
-
-			return $this->processFormFinding('update', $id);
-
-		}*/
 		
 	}
 

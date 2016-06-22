@@ -271,7 +271,7 @@
 
 						<input class="hidden" id="finding_id" name="finding_id" type="text" value="{{ $finding->id }}">
 
-						<select name="type" id="type">
+						<select class="form-control" name="type" id="type">
 
 							<option value=""></option>
 
@@ -289,7 +289,7 @@
 
 					<th>
 
-						<input type="text" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">	
+						<input type="datetime" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">	
 
 					</th>
 
@@ -297,7 +297,7 @@
 
 						@if ( is_object($finding->disease) )
 
-						<select name="disease_id" id="disease_id">
+						<select class="form-control" name="disease_id" id="disease_id">
 							
 							@foreach ( $diseases as $disease )
 
@@ -317,7 +317,7 @@
 
 						@if ( is_object($part) )
 
-						<select name="part_id" id="part_id">
+						<select class="form-control" name="part_id" id="part_id">
 
 							<option value=""></option>
 							
@@ -361,7 +361,7 @@
 
 
 
-						<select name="treatment_id" id="treatment_id">
+						<select class="form-control" name="treatment_id" id="treatment_id">
 
 							<option value=""></option>
 							

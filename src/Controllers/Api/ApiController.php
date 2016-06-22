@@ -3095,7 +3095,6 @@ examinations: [
         // Do we have any errors?
         if ($messages->isEmpty()) {
         	// Activate user
-        	$user->active = 1;
         	$user->save();
         	
         	Event::fire('hoofmanager.registration.success', ['user' => $user]);

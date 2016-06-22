@@ -26,4 +26,9 @@ class Vet extends BaseUser {
 		return Vet::find($user->id); 
 	}
 
+	public static function isAdmin()
+	{
+		return Sentinel::hasAnyAccess(['admin.dashboard']);
+	}
+
 }
