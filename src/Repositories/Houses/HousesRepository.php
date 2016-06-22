@@ -110,6 +110,11 @@ class HousesRepository implements HousesRepositoryInterface {
 			return false;
 		}
 
+		if ( isset($input['items']) )
+		{
+			$items = array_pull($input, 'items');
+		}
+
 		// Prepare the submitted data
 		$data = $this->data->prepare($input);
 
@@ -121,6 +126,19 @@ class HousesRepository implements HousesRepositoryInterface {
 		{
 			// Save the houses
 			$houses->fill($data)->save();
+
+			$items_to_save = [];
+
+			foreach( $items as $item )
+			{
+				$temp_id = array_pull($item, 'id');
+
+				$object = \Sanatorium\Hoofmanager\Models\Item::create($item);
+
+				$items_to_save[] = $object;
+			}
+
+			$houses->items()->saveMany($items_to_save);
 
 			// Fire the 'sanatorium.hoofmanager.houses.created' event
 			$this->fireEvent('sanatorium.hoofmanager.houses.created', [ $houses ]);
