@@ -18,14 +18,14 @@ class Treatment extends Model implements EntityInterface {
 	 * {@inheritDoc}
 	 */
 	protected $guarded = [
-		'id',
+	'id',
 	];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $with = [
-		'values.attribute',
+	'values.attribute',
 	];
 
 	/**

@@ -231,5 +231,9 @@ class TreatmentsController extends ApiController {
 		return redirect()->back()->withInput();
 	}
 
+	public function treatments() {
+		return app("sanatorium.hoofmanager.treatment")->get();
+	}
+
 }
 

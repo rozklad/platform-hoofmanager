@@ -18,19 +18,25 @@ class Apilog extends Model implements EntityInterface {
 	 * {@inheritDoc}
 	 */
 	protected $guarded = [
-		'id',
+	'id',
 	];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $with = [
-		'values.attribute',
+	'values.attribute',
 	];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected static $entityNamespace = 'sanatorium/hoofmanager.apilog';
+
+	public function treatments()
+	{
+		dd("ahoj");
+		return $this->belongsTo('Sanatorium\Hoofmanager\Models\Examination', 'examination_id');
+	}
 
 }
