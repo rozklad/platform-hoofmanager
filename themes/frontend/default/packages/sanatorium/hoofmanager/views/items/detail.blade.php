@@ -51,7 +51,76 @@
 		border-bottom: 1px solid;
 	}
 
+	.hoof-modal {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		display: none;
+		background-color: rgba(0,0,0,0.7);
+	}
+
+	.hoof-modal .hoof-modal-body {
+		position: absolute;
+		top: 30%;
+		left: 30%;
+		right: 30%;
+		background-color: #fff;
+	}
+
+	.path-active {
+		fill: green;
+	}
+
+	#close-hoof-modal {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 40px;
+		padding: 5px 15px;
+		cursor: pointer;
+	}
+
 </style>
+@stop
+
+{{-- Scripts --}}
+@section('scripts')
+@parent
+
+<script type="text/javascript">
+	
+	$(function(){
+
+		$("#subpart_button").on('click', function(){
+
+			$(".hoof-modal").fadeIn('slow');
+
+		});
+
+		$("#close-hoof-modal").on('click', function(){
+
+			$(".hoof-modal").fadeOut('slow');
+
+		})
+
+		$('.hoof-svg').find("path, rect").on('click', function(){
+
+			var subpart_id = $(this).attr('subpart');
+
+			$(".path-active").attr("class", "");
+
+			$(this).attr("class", "path-active");
+
+			$('#newfinding_subpart_id').val(subpart_id);
+		});
+
+	});
+
+</script>
+
 @stop
 
 {{-- Page content --}}
@@ -245,269 +314,403 @@
 
 	</span>
 
-	<h3>
+	<ul class="nav nav-tabs">
 
-		Nálezy
+		<li class="active">
 
-	</h3>
+			<a data-toggle="tab" href="#nalezy">
 
-	<table class="table">
-		<thead>
-			<th>Typ</th>
-			<th>Datum</th>
-			<th>Nemoc</th>
-			<th>Část</th>
-			<th>Členění</th>
-			<th>Ošetření</th>
-		</thead>
-		<tbody>
+				<h3>Nálezy</h3>
 
-			<!-- Create new examination and finding -->
+			</a>
 
-			<form method="POST" action="newfinding">
+		</li>
 
-				<tr class="new-finding-row">
+		<li><a data-toggle="tab" href="#kontroly"><h3>Kontroly</h3></a></li>
+	</ul>
 
-					<th>
+	<div class="tab-content">
 
-						<select class="form-control" name="newfinding[0][type]" id="type">
+		<div id="nalezy" class="tab-pane fade in active">
 
-							<option value="">Zvolte typ</option>
+			<table class="table">
+				<thead>
+					<th>Typ</th>
+					<th>Datum</th>
+					<th>Nemoc</th>
+					<th>Část</th>
+					<th>Členění</th>
+					<th>Ošetření</th>
+				</thead>
+				<tbody>
 
-							<option value="Kontrola">Kontrola</option>
+					<!-- Create new examination and finding -->
 
-							<option value="FUP">FUP</option>
+					<form method="POST" action="{{ $item->id }}/newfinding">
 
-						</select>
+						<tr class="new-finding-row">
 
-					</th>
+							<th>
 
-					<th>
-						
-						<input type="datetime" id="created_at" class="form-control" name="newfinding[0][created_at]" value="{{ date('Y-m-d H:i:s') }}">
+								<select class="form-control" name="newfinding[0][type]" id="type">
 
-					</th>
+									<option value="">Zvolte typ</option>
 
-					<th>
-						
-						<select class="form-control" name="newfinding[0][disease_id]" id="disease_id">
+									<option value="Kontrola">Kontrola</option>
 
-							<option value="">Vyberte nemoc</option>
+									<option value="FUP">FUP</option>
+
+								</select>
+
+							</th>
+
+							<th>
+
+								<input type="datetime" id="created_at" class="form-control" name="newfinding[0][created_at]" value="{{ date('Y-m-d H:i:s') }}">
+
+							</th>
+
+							<th>
+
+								<select class="form-control" name="newfinding[0][disease_id]" id="disease_id">
+
+									<option value="">Vyberte nemoc</option>
+
+									@foreach ( $diseases as $disease )
+
+									<option value="{{ $disease->id }}">{{ $disease->name }}</option>
+
+									@endforeach
+
+								</select>
+
+							</th>
+
+							<th>
+
+								<select class="form-control" name="newfinding[0][part_id]" id="part_id">
+
+									<option value="">Vyberte končetinu</option>
+
+									<option value="1">Levá přední</option>
+
+									<option value="2">Pravá přední</option>
+
+									<option value="3">Levá zadní</option>
+
+									<option value="4">Pravá zadní</option>
+
+								</select>	
+
+							</th>
+
+							<th>
+
+								<!-- TODO část končetiny -->
+
+								<span class="btn btn-succes" style="width:100%" id="subpart_button">
+
+									Vybrat část
+
+								</span>
+
+								<div class="hoof-modal">
+
+									<div class="hoof-modal-body">
+
+										<span id="close-hoof-modal">X</span>
+
+										@include('sanatorium/hoofmanager::items/hoof')
+
+									</div>
+
+								</div>
+
+								<input type="hidden" name="newfinding[0][subpart_id]" id="newfinding_subpart_id">
+
+							</th>
+
+							<th>
+
+								<select class="form-control" name="newfinding[0][treatment_id]" id="treatment_id">
+
+									<option value="">Vyberte ošetření</option>
+
+									@foreach ( $treatments as $treatment )
+
+									<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+
+									@endforeach
+
+								</select>
+
+							</th>
+
+							<th>
+
+								<button type="submit" class="btn btn-success" style="width:100%;">
+									<!--{{ trans('action.save') }}--> Nový
+								</button>
+
+							</th>
+
+						</tr>
+
+					</form>
+
+
+					@foreach( $examinations as $examination )
+
+					@foreach( $examination->findings as $finding )
+
+					<form method="POST">
+
+						<tr>
+
+							<th>
+
+								<input class="hidden" id="finding_id" name="finding_id" type="text" value="{{ $finding->id }}">
+
+								<select class="form-control" name="type" id="type">
+
+									<option value=""></option>
+
+									<option <?php echo($finding->type === 'Kontrola') ? 'selected' : '' ?> value="Kontrola">Kontrola</option>
+
+									<option <?php echo($finding->type === 'FUP') ? 'selected' : '' ?> value="FUP">FUP</option>
+
+									<option <?php echo($finding->type === 'Založení') ? 'selected' : '' ?> value="Založení">Založení</option>
+
+									<option <?php echo($finding->type === 'Odebrání obojku') ? 'selected' : '' ?> value="Odebrání obojku">Odebrání obojku</option>
+
+								</select>
+
+							</th>
+
+							<th>
+
+								<input type="datetime" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">	
+
+							</th>
+
+							<th>
+
+								@if ( is_object($finding->disease) )
+
+								<select class="form-control" name="disease_id" id="disease_id">
+
+									@foreach ( $diseases as $disease )
+
+									<option <?php echo($finding->disease->name == $disease->name) ? 'selected' : '' ?>  value="{{ $disease->id }}">{{ $disease->name }}</option>
+
+									@endforeach
+
+								</select>
+
+								@endif
+
+							</th>
+
+							<th>
+
+								<?php $part = $finding->part()->first() ?>
+
+								@if ( is_object($part) )
+
+								<select class="form-control" name="part_id" id="part_id">
+
+									<option value=""></option>
+
+									<option <?php echo($part->name === 'Levá přední') ? 'selected' : '' ?> value="1">Levá přední</option>
+
+									<option <?php echo($part->name === 'Pravá přední') ? 'selected' : '' ?> value="2">Pravá přední</option>
+
+									<option <?php echo($part->name === 'Levá zadní') ? 'selected' : '' ?> value="3">Levá zadní</option>
+
+									<option <?php echo($part->name === 'Pravá zadní') ? 'selected' : '' ?> value="4">Pravá zadní</option>
+
+								</select>	
+
+								@else
+
+								{{ $finding->part_id }}
+
+								@endif
+
+							</th>
+
+							<th>
+
+								<?php $subpart = $finding->subpart()->first() ?>
+
+								@if ( is_object($subpart) )
+
+								<input type="text" id="subpart" class="form-control" name="subpart" value="{{ $subpart->label }}">	
+
+								@else
+
+								{{ $finding->subpart_id }}
+
+								@endif
+
+							</th>
+
+							<th>
+
+								<?php $treatment_translate = $finding->treatment()->first() ?>
+
+
+
+								<select class="form-control" name="treatment_id" id="treatment_id">
+
+									<option value=""></option>
+
+									@foreach ( $treatments as $treatment )
+
+									@if( is_object($treatment_translate) )
+
+									<option <?php echo($treatment_translate->name == $treatment->name) ? 'selected' : '' ?>  value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+
+									@else
+
+									<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+
+									@endif
+
+									@endforeach
+
+								</select>
+
+
+
+							</th>
+
+							<th>
+
+								<button type="submit" class="btn btn-success" style="width:100%;">
+									{{ trans('action.save') }}
+								</button>
+
+							</th>
+
+						</tr>
+
+					</form>
+
+					@endforeach
+
+					@endforeach
+
+				</tbody>
+
+			</table>
+
+		</div>
+
+		<div id="kontroly" class="tab-pane fade">
+
+			<table class="table">
+				<thead>
+					<th>Datum kontroly</th>
+					<th>Nález</th>
+					<th>Část</th>
+					<th>Členění</th>
+					<th>Ošetření</th>
+					<th>Ze kdy</th>
+				</thead>
+				<tbody>
+
+					@foreach( $examinations as $examination )
+
+					@foreach( $examination->findings as $finding )
+
+					@if ( $finding->check_date && $finding->check_date != "0000-00-00 00:00:00" )
+
+					<tr>
+
+						<th>
 							
-							@foreach ( $diseases as $disease )
+							{{ date("d. m. Y", strtotime($finding->check_date)) }}
 
-							<option value="{{ $disease->id }}">{{ $disease->name }}</option>
+						</th>
 
-							@endforeach
-
-						</select>
-
-					</th>
-
-					<th>
-						
-						<select class="form-control" name="newfinding[0][part_id]" id="part_id">
-
-							<option value="">Vyberte končetinu</option>
+						<th>
 							
-							<option value="1">Levá přední</option>
+							{{ $finding->disease->name }}
 
-							<option value="2">Pravá přední</option>
+						</th>
 
-							<option value="3">Levá zadní</option>
-
-							<option value="4">Pravá zadní</option>
-
-						</select>	
-
-					</th>
-
-					<th>
-						
-						<!-- TODO část končetiny -->
-
-						<span class="btn btn-succes" style="width:100%">
+						<th>
 							
-							Vybrat část
+							<?php $part = $finding->part()->first() ?>
 
-						</span>
+							@if ( is_object($part) )
 
-					</th>
-
-					<th>
-						
-						<select class="form-control" name="newfinding[0][treatment_id]" id="treatment_id">
-
-							<option value="">Vyberte ošetření</option>
-							
-							@foreach ( $treatments as $treatment )
-
-							<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
-
-							@endforeach
-
-						</select>
-
-					</th>
-
-					<th>
-						
-						<button type="submit" class="btn btn-success" style="width:100%;">
-							<!--{{ trans('action.save') }}--> Nový
-						</button>
-
-					</th>
-
-				</tr>
-
-			</form>
-
-
-			@foreach( $examinations as $examination )
-
-			@foreach( $examination->findings as $finding )
-
-			<form method="POST">
-
-				<tr>
-
-					<th>
-
-						<input class="hidden" id="finding_id" name="finding_id" type="text" value="{{ $finding->id }}">
-
-						<select class="form-control" name="type" id="type">
-
-							<option value=""></option>
-
-							<option <?php echo($finding->type === 'Kontrola') ? 'selected' : '' ?> value="Kontrola">Kontrola</option>
-
-							<option <?php echo($finding->type === 'FUP') ? 'selected' : '' ?> value="FUP">FUP</option>
-
-							<option <?php echo($finding->type === 'Založení') ? 'selected' : '' ?> value="Založení">Založení</option>
-
-							<option <?php echo($finding->type === 'Odebrání obojku') ? 'selected' : '' ?> value="Odebrání obojku">Odebrání obojku</option>
-
-						</select>
-
-					</th>
-
-					<th>
-
-						<input type="datetime" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">	
-
-					</th>
-
-					<th>
-
-						@if ( is_object($finding->disease) )
-
-						<select class="form-control" name="disease_id" id="disease_id">
-							
-							@foreach ( $diseases as $disease )
-
-							<option <?php echo($finding->disease->name == $disease->name) ? 'selected' : '' ?>  value="{{ $disease->id }}">{{ $disease->name }}</option>
-
-							@endforeach
-
-						</select>
-
-						@endif
-
-					</th>
-
-					<th>
-
-						<?php $part = $finding->part()->first() ?>
-
-						@if ( is_object($part) )
-
-						<select class="form-control" name="part_id" id="part_id">
-
-							<option value=""></option>
-							
-							<option <?php echo($part->name === 'Levá přední') ? 'selected' : '' ?> value="1">Levá přední</option>
-
-							<option <?php echo($part->name === 'Pravá přední') ? 'selected' : '' ?> value="2">Pravá přední</option>
-
-							<option <?php echo($part->name === 'Levá zadní') ? 'selected' : '' ?> value="3">Levá zadní</option>
-
-							<option <?php echo($part->name === 'Pravá zadní') ? 'selected' : '' ?> value="4">Pravá zadní</option>
-
-						</select>	
-
-						@else
-
-						{{ $finding->part_id }}
-
-						@endif
-
-					</th>
-
-					<th>
-
-						<?php $subpart = $finding->subpart()->first() ?>
-
-						@if ( is_object($subpart) )
-
-						<input type="text" id="subpart" class="form-control" name="subpart" value="{{ $subpart->label }}">	
-
-						@else
-
-						{{ $finding->subpart_id }}
-
-						@endif
-
-					</th>
-
-					<th>
-
-						<?php $treatment_translate = $finding->treatment()->first() ?>
-
-
-
-						<select class="form-control" name="treatment_id" id="treatment_id">
-
-							<option value=""></option>
-							
-							@foreach ( $treatments as $treatment )
-
-							@if( is_object($treatment_translate) )
-
-							<option <?php echo($treatment_translate->name == $treatment->name) ? 'selected' : '' ?>  value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+							{{ $part->label }}
 
 							@else
 
-							<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+							{{ $finding->part_id }}
 
 							@endif
 
-							@endforeach
+						</th>
 
-						</select>
+						<th>
+							
+							<?php $subpart = $finding->subpart()->first() ?>
 
+							@if ( is_object($subpart) )
 
+							{{ $subpart->label }}
 
-					</th>
-					
-					<th>
+							@else
 
-						<button type="submit" class="btn btn-success" style="width:100%;">
-							{{ trans('action.save') }}
-						</button>
+							{{ $finding->subpart_id }}
 
-					</th>
+							@endif
 
-				</tr>
+						</th>
 
-			</form>
+						<th>
+							
+							<?php $treatment_translate = $finding->treatment()->first() ?>
 
-			@endforeach
+								@if( is_object($treatment_translate) )
 
-			@endforeach
+								{{ $treatment_translate->name }}
 
-		</tbody>
+								@else
 
-	</table>
+								{{ $finding->treatment }}
+
+								@endif
+
+							</select>
+							
+						</th>
+
+						<th>
+							
+							{{ date("d. m. Y", strtotime($finding->created_at)) }}
+
+						</th>
+
+					</tr>
+
+					@endif
+
+					@endforeach
+
+					@endforeach
+
+				</tbody>
+
+			</table>
+
+		</div>
+
+	</div>
 
 </div>
 

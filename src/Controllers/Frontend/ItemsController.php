@@ -5,6 +5,7 @@ use Sanatorium\Hoofmanager\Models\Vet;
 use Sanatorium\Hoofmanager\Models\House;
 use Sanatorium\Hoofmanager\Models\Item;
 use Sanatorium\Hoofmanager\Models\Examination;
+use Sentinel;
 
 class ItemsController extends Controller {
 
@@ -20,6 +21,9 @@ class ItemsController extends Controller {
 
 	public function edit($id)
 	{
+
+		if ( !Sentinel::check() )
+			return redirect()->route('user.login');
 
 		$vet = Vet::getVet();
 
