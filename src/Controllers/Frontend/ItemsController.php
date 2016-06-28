@@ -4,6 +4,7 @@ use Platform\Foundation\Controllers\Controller;
 use Sanatorium\Hoofmanager\Models\Vet;
 use Sanatorium\Hoofmanager\Models\House;
 use Sanatorium\Hoofmanager\Models\Item;
+use Sanatorium\Hoofmanager\Models\Examination;
 
 class ItemsController extends Controller {
 
@@ -57,6 +58,7 @@ class ItemsController extends Controller {
 
 	public function update($id)
 	{
+
 		$item = Item::find($id);
 
 		$items = app('sanatorium.hoofmanager.items');
@@ -85,6 +87,30 @@ class ItemsController extends Controller {
 
 		return redirect()->back();
 		
+	}
+
+	public function newfinding($id)
+	{
+		$data = request()->newfinding[0];
+
+		$vet = Vet::getVet();
+
+		$examinations = app('sanatorium.hoofmanager.examination');
+
+		$findings = app('sanatorium.hoofmanager.finding');
+
+		$new_examination = ['user_id' => $vet->id, 'item_id' => $id, 'created_at' => $data['created_at']];
+
+		list($messages, $examination) = $examinations->store(null, $new_examination);
+
+		$new_finding = $data;
+
+		$new_finding['examination_id'] = $examination->id;
+
+		list($messages, $finding) = $findings->store(null, $new_finding);
+
+		return redirect()->back();
+
 	}
 
 	/**

@@ -47,6 +47,10 @@
 		text-align: center
 	}
 
+	.new-finding-row th {
+		border-bottom: 1px solid;
+	}
+
 </style>
 @stop
 
@@ -257,6 +261,106 @@
 			<th>Ošetření</th>
 		</thead>
 		<tbody>
+
+			<!-- Create new examination and finding -->
+
+			<form method="POST" action="newfinding">
+
+				<tr class="new-finding-row">
+
+					<th>
+
+						<select class="form-control" name="newfinding[0][type]" id="type">
+
+							<option value="">Zvolte typ</option>
+
+							<option value="Kontrola">Kontrola</option>
+
+							<option value="FUP">FUP</option>
+
+						</select>
+
+					</th>
+
+					<th>
+						
+						<input type="datetime" id="created_at" class="form-control" name="newfinding[0][created_at]" value="{{ date('Y-m-d H:i:s') }}">
+
+					</th>
+
+					<th>
+						
+						<select class="form-control" name="newfinding[0][disease_id]" id="disease_id">
+
+							<option value="">Vyberte nemoc</option>
+							
+							@foreach ( $diseases as $disease )
+
+							<option value="{{ $disease->id }}">{{ $disease->name }}</option>
+
+							@endforeach
+
+						</select>
+
+					</th>
+
+					<th>
+						
+						<select class="form-control" name="newfinding[0][part_id]" id="part_id">
+
+							<option value="">Vyberte končetinu</option>
+							
+							<option value="1">Levá přední</option>
+
+							<option value="2">Pravá přední</option>
+
+							<option value="3">Levá zadní</option>
+
+							<option value="4">Pravá zadní</option>
+
+						</select>	
+
+					</th>
+
+					<th>
+						
+						<!-- TODO část končetiny -->
+
+						<span class="btn btn-succes" style="width:100%">
+							
+							Vybrat část
+
+						</span>
+
+					</th>
+
+					<th>
+						
+						<select class="form-control" name="newfinding[0][treatment_id]" id="treatment_id">
+
+							<option value="">Vyberte ošetření</option>
+							
+							@foreach ( $treatments as $treatment )
+
+							<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+
+							@endforeach
+
+						</select>
+
+					</th>
+
+					<th>
+						
+						<button type="submit" class="btn btn-success" style="width:100%;">
+							<!--{{ trans('action.save') }}--> Nový
+						</button>
+
+					</th>
+
+				</tr>
+
+			</form>
 
 
 			@foreach( $examinations as $examination )

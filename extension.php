@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '0.3.9',
+    'version' => '0.4.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -198,6 +198,8 @@ return [
                 Route::get('edit/{id}', ['as' => 'sanatorium.hoofmanager.items.edit', 'uses' => 'ItemsController@edit']);
 
                 Route::post('edit/{id}', ['as' => 'sanatorium.hoofmanager.items.update', 'uses' => 'ItemsController@update']);
+
+                Route::post('edit/{id}/newfinding', ['as' => 'sanatorium.hoofmanager.items.newfinding', 'uses' => 'ItemsController@newfinding']);
 
             });
         });
