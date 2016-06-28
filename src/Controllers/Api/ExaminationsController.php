@@ -68,8 +68,8 @@ class ExaminationsController extends ApiController {
 				$item->save();
 			} else if ( !$item ) {
 				$item_data = [
-					'item_number' => $item_number
-					];
+				'item_number' => $item_number
+				];
 				if ( isset($examination['collar']) ) {
 					$item_data['collar'] = $examination['collar'];
 				} else {
@@ -86,19 +86,21 @@ class ExaminationsController extends ApiController {
 			$examinationObj->save();
 
 			if ( $item && empty($examination['collar']) ) {
-				$item->collar = null;
-				$item->save();
+				if ( $item->collar ) {
+					$item->collar = null;
+					$item->save();
 
-				$finding = new Finding([
-					'disease_id' => 0,
-					'part_id' => 0,
-					'subpart_id' => 0,
-					'examination_id' => $examinationObj->id,
-					'treatment_id' => 0,
-					'check_date' => 0,
-					'type' => 'Odebrání obojku',
-				]);
-				$finding->save();
+					$finding = new Finding([
+						'disease_id' => 0,
+						'part_id' => 0,
+						'subpart_id' => 0,
+						'examination_id' => $examinationObj->id,
+						'treatment_id' => 0,
+						'check_date' => 0,
+						'type' => 'Odebrání obojku',
+						]);
+					$finding->save();
+				}
 			}
 
 			if ( isset($examination['diseases']) ) {
@@ -142,7 +144,23 @@ class ExaminationsController extends ApiController {
 								$diseaseObj->save();
 							}
 
-							foreach($disease['treatment'] as $treatment_name) {
+							if ( is_array($disease['treatment']) ) {
+
+								foreach($disease['treatment'] as $treatment_name) {
+									$treatmentObj = Treatment::where('name', $treatment_name)->first();
+
+									if ( !$treatmentObj ) {
+										$treatmentObj = new Treatment([
+											'name' => $treatment_name
+											]);
+										$treatmentObj->save();
+									}
+								}
+
+							} else {
+
+								$treatment_name = $disease['treatment'];
+
 								$treatmentObj = Treatment::where('name', $treatment_name)->first();
 
 								if ( !$treatmentObj ) {
@@ -151,6 +169,7 @@ class ExaminationsController extends ApiController {
 										]);
 									$treatmentObj->save();
 								}
+
 							}
 
 							if ( is_array($disease['subpart_id']) ) {
@@ -180,7 +199,7 @@ class ExaminationsController extends ApiController {
 									'treatment_id' => $treatmentObj->id,
 									'check_date' => $disease['check_date'],
 									'type' => $disease['type'],
-								]);
+									]);
 								$finding->save();
 							}
 
@@ -198,13 +217,13 @@ class ExaminationsController extends ApiController {
 					'treatment_id' => 0,
 					'check_date' => 0,
 					'type' => 'Založení',
-				]);
+					]);
 				$finding->save();
 			}
 		}
 
 		return [
-			'success' => true
+		'success' => true
 		];
 	}
 
