@@ -142,6 +142,9 @@ class HoofController extends Controller {
 	public function stats()
 	{
 
+		if ( !Sentinel::check() )
+			return redirect()->route('user.login');
+
 		$vet = Vet::getVet();
 
 		$diseases = app('sanatorium.hoofmanager.diseases')->findAll();

@@ -35,7 +35,6 @@ class Apilog extends Model implements EntityInterface {
 
 	public function treatments()
 	{
-		dd("ahoj");
 		return $this->belongsTo('Sanatorium\Hoofmanager\Models\Examination', 'examination_id');
 	}
 

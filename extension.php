@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '0.4.1',
+    'version' => '0.4.2',
 
     /*
     |--------------------------------------------------------------------------
@@ -304,6 +304,8 @@ return [
                 Route::post('auth', ['as' => 'sanatorium.hoofmanager.api.vet.auth', 'uses' => 'VetController@auth']);
 
                 Route::get('{id}', ['as' => 'sanatorium.hoofmanager.api.vet.find', 'uses' => 'VetController@find']);
+
+                Route::get('checks/{id}', ['as' => 'sanatorium.hoofmanager.api.vet.checks', 'uses' => 'VetController@checks']);
 
             });
         });
