@@ -68,8 +68,6 @@ class HousesController extends ApiController {
 	{
 		$data = $this->houses->grid();
 
-		dd($data);
-
 		$columns = [
 			'id',
 			'cattle_number',
