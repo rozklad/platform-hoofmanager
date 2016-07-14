@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '0.4.3',
+    'version' => '0.4.4',
 
     /*
     |--------------------------------------------------------------------------
@@ -349,7 +349,7 @@ return [
 
             Route::get('grid', ['as' => 'admin.sanatorium.hoofmanager.vet.grid', 'uses' => 'VetController@grid']);
         });
-
+/*
         Route::group([
             'prefix'    => admin_uri() . '/hoofmanager/vets',
             'namespace' => 'Sanatorium\Hoofmanager\Controllers\Admin',
@@ -368,7 +368,7 @@ return [
 
             Route::delete('{id}', ['as' => 'admin.sanatorium.hoofmanager.vets.delete', 'uses' => 'VetsController@delete']);
         });
-
+*/
         Route::group([
             'prefix'    => admin_uri() . '/hoofmanager/houses',
             'namespace' => 'Sanatorium\Hoofmanager\Controllers\Admin',
