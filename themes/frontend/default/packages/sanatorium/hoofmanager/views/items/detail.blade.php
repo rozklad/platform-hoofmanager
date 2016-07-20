@@ -130,6 +130,8 @@
 
 	<h2 class="card-header">
 
+		<a href="{{ route('sanatorium.hoofmanager.houses.edit', $house->id) }}"><i class="ion-ios-arrow-thin-left"></i>	</a>
+
 		<?php 
 
 		$interval = date_diff(date_create(), date_create($item->birthday));
@@ -676,41 +678,41 @@
 							
 							<?php $treatment_translate = $finding->treatment()->first() ?>
 
-								@if( is_object($treatment_translate) )
+							@if( is_object($treatment_translate) )
 
-								{{ $treatment_translate->name }}
+							{{ $treatment_translate->name }}
 
-								@else
+							@else
 
-								{{ $finding->treatment }}
+							{{ $finding->treatment }}
 
-								@endif
+							@endif
 
-							</select>
-							
-						</th>
+						</select>
 
-						<th>
-							
-							{{ date("d. m. Y", strtotime($finding->created_at)) }}
+					</th>
 
-						</th>
+					<th>
 
-					</tr>
+						{{ date("d. m. Y", strtotime($finding->created_at)) }}
 
-					@endif
+					</th>
 
-					@endforeach
+				</tr>
 
-					@endforeach
+				@endif
 
-				</tbody>
+				@endforeach
 
-			</table>
+				@endforeach
 
-		</div>
+			</tbody>
+
+		</table>
 
 	</div>
+
+</div>
 
 </div>
 

@@ -99,6 +99,8 @@
 	<div class="form-group">
 		
 		<select class="form-control" name="cattle_stats" id="cattle_stats">
+
+		<option value="0">Vyberte chov</option>
 			
 			@foreach ( $houses as $house )
 
@@ -112,7 +114,7 @@
 
 	<div id="cattle_pie" class="ct-chart ct-chart-pie"></div>
 
-	<h3 class="text-center">Vývoj nemoci u zvířete</h3>
+	<!--<h3 class="text-center">Vývoj nemoci u zvířete</h3>
 
 	<div class="col-md-12">
 
@@ -167,7 +169,7 @@
 
 		@endif
 
-		<div id="line" class="ct-chart ct-golden-section"></div>
+		<div id="line" class="ct-chart ct-golden-section"></div>-->
 
 	</div>
 
@@ -247,7 +249,7 @@
 
 	});
 
-	new Chartist.Line('#line', {
+	/*new Chartist.Line('#line', {
 		labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
 		series: [
 		[5, 4, 3, 2, 1]
@@ -260,7 +262,7 @@
 			top: 20
 			//right: 40
 		}
-	});
+	});*/
 </script>
 
 @stop
