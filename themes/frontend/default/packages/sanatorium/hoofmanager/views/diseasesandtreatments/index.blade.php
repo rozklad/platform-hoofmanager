@@ -37,7 +37,7 @@
 
     <div class="row">
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-4">
 
             <h4>Nemoci</h4>
 
@@ -47,9 +47,7 @@
 
                 <tr>
 
-                    <th>Název nemoci</th>
-
-                    <th>Vhodné léčení nemoci</th>
+                    <th>Název</th>
 
                     <th></th>
 
@@ -61,25 +59,11 @@
 
                 <tr class="new">
 
-                    <form method="POST" action="newdisease/">
+                    <form method="POST" action="diseasesandtreatments/newdisease/">
 
                         <td>
 
                             <input type="text" name="name" placeholder="Název" required>
-
-                        </td>
-
-                        <td>
-
-                            <select name="treatment_id" id="">
-
-                                @foreach ( $treatments as $treatment )
-
-                                    <option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
-
-                                @endforeach
-
-                            </select>
 
                         </td>
 
@@ -99,27 +83,13 @@
 
                 @foreach ( $diseases as $disease )
 
-                    <form action="disease/{{ $disease->id }}" method="POST">
+                    <form action="diseasesandtreatments/disease/{{ $disease->id }}" method="POST">
 
                         <tr>
 
                             <td>
 
                                 <input type="text" name="name" value="{{ $disease->name }}" required>
-
-                            </td>
-
-                            <td>
-
-                                <select name="treatment_id" id="">
-
-                                    @foreach ( $treatments as $treatment )
-
-                                        <option {{ ($treatment->id == $disease->treatment_id ? "selected" : '' ) }}  value="{{ $treatment->id }}">{{ $treatment->name }}</option>
-
-                                    @endforeach
-
-                                </select>
 
                             </td>
 
@@ -145,7 +115,7 @@
 
         </div>
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-8">
 
             <h4>Ošetření</h4>
 
@@ -155,7 +125,9 @@
 
                 <tr>
 
-                    <th>Název ošetření</th>
+                    <th>Název</th>
+
+                    <th>Nemoc</th>
 
                     <th>FaSy výrobek?</th>
 
@@ -167,11 +139,25 @@
 
                 <tr class="new">
 
-                    <form action="newtreatment" method="POST">
+                    <form action="diseasesandtreatments/newtreatment" method="POST">
 
                         <td>
 
                             <input type="text" name="name" placeholder="Název ošetření" required>
+
+                        </td>
+
+                        <td>
+
+                            <select name="disease_id" id="">
+
+                                @foreach ( $diseases as $disease )
+
+                                    <option value="{{ $disease->id }}">{{ $disease->name }}</option>
+
+                                @endforeach
+
+                            </select>
 
                         </td>
 
@@ -197,13 +183,27 @@
 
                 @foreach ( $treatments as $treatment )
 
-                    <form action="treatment/{{ $treatment->id }}" method="POST">
+                    <form action="diseasesandtreatments/treatment/{{ $treatment->id }}" method="POST">
 
                         <tr>
 
                             <td>
 
                                 <input name="name" type="text" value="{{ $treatment->name }}" required>
+
+                            </td>
+
+                            <td>
+
+                                <select name="disease_id" id="">
+
+                                    @foreach ( $diseases as $disease )
+
+                                        <option {{ ($disease->id == $treatment->id) ? 'selected' : '' }} value="{{ $disease->id }}">{{ $disease->name }}</option>
+
+                                    @endforeach
+
+                                </select>
 
                             </td>
 

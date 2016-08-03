@@ -16,6 +16,7 @@ class CreateTreatmentsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
+            $table->integer('disease_id')->nullable();
 			$table->timestamps();
 		});
 	}
