@@ -16,7 +16,9 @@ class ItemsController extends Controller {
 	 */
 	public function index()
 	{
-		return view('sanatorium/hoofmanager::index');
+	    $vet = Vet::getVet();
+
+		return view('sanatorium/hoofmanager::index', compact('vet'));
 	}
 
 	public function edit($id)
@@ -57,7 +59,7 @@ class ItemsController extends Controller {
 			$item = $items->createModel();
 		}
 
-		return view('sanatorium/hoofmanager::items/detail', compact('item', 'examinations', 'houses', 'house', 'diseases', 'treatments'));
+		return view('sanatorium/hoofmanager::items/detail', compact('item', 'examinations', 'houses', 'house', 'diseases', 'treatments', 'vet'));
 	}
 
 	public function update($id)
@@ -67,27 +69,29 @@ class ItemsController extends Controller {
 
 		$items = app('sanatorium.hoofmanager.items');
 
+        $findings = app('sanatorium.hoofmanager.finding');
+
 		$actual_cattle = Item::find($id)->houses()->first();
 
-		if ( $actual_cattle->id != request()->cattle_id ) {
+		if ( request()->cattle_id ) {
 
 			$new_cattle = House::find( request()->cattle_id );
 
 			$item->houses()->sync([$new_cattle->id]);
 
-		}
-
-		if ( $item->collar != request()->collar ) {
+		} else if ( $item->collar != request()->collar ) {
 
 			$items->store($id, request()->only('collar'));
 
-		}
-
-		if ( $item->birthday != request()->birthday ) {
+		} else if ( $item->birthday != request()->birthday ) {
 
 			$items->store($id, request()->only('birthday'));
 
-		}
+		} else {
+
+		    $findings->store(request()->finding_id, request()->except('finding_id'));
+
+        }
 
 		return redirect()->back();
 		

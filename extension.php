@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '0.4.5',
+    'version' => '0.4.6',
 
     /*
     |--------------------------------------------------------------------------
@@ -174,6 +174,16 @@ return [
             Route::get('stats', ['as' => 'sanatorium.hoofmanager.stats', 'uses' => 'HoofController@stats']);
 
             Route::post('stats', ['as' => 'sanatorium.hoofmanager.stats.house', 'uses' => 'HoofController@statsByHouse']);
+
+            Route::get('diseasesandtreatments', ['as' => 'sanatorium.hoofmanager.diseasesAndTreatments', 'uses' => 'HoofController@DiseasesAndTreatments']);
+
+            Route::post('diseasesandtreatments/newdisease', ['as' => 'sanatorium.hoofmanager.newDisease', 'uses' => 'DiseasesController@newDisease']);
+
+            Route::post('diseasesandtreatments/disease/{id}', ['as' => 'sanatorium.hoofmanager.editDisease', 'uses' => 'DiseasesController@edit']);
+
+            Route::post('diseasesandtreatments/newtreatment', ['as' => 'sanatorium.hoofmanager.newTreatment', 'uses' => 'TreatmentsController@newTreatment']);
+
+            Route::post('diseasesandtreatments/treatment/{id}', ['as' => 'sanatorium.hoofmanager.editTreatment', 'uses' => 'TreatmentsController@edit']);
 
             Route::group([
                 'prefix' => 'houses',

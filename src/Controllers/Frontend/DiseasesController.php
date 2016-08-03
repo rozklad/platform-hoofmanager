@@ -1,6 +1,7 @@
 <?php namespace Sanatorium\Hoofmanager\Controllers\Frontend;
 
 use Platform\Foundation\Controllers\Controller;
+use Sanatorium\Hoofmanager\Models\Disease;
 
 class DiseasesController extends Controller {
 
@@ -13,5 +14,23 @@ class DiseasesController extends Controller {
 	{
 		return view('sanatorium/hoofmanager::index');
 	}
+
+	public function newDisease()
+    {
+        $diseases = app('sanatorium.hoofmanager.diseases');
+
+        $diseases->store(null, request()->all());
+
+        return redirect()->back();
+    }
+
+    public function edit($id)
+    {
+        $diseases = app('sanatorium.hoofmanager.diseases');
+
+        $diseases->store($id, request()->all());
+
+        return redirect()->back();
+    }
 
 }

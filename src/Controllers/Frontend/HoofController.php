@@ -39,12 +39,14 @@ class HoofController extends Controller {
 
 		}
 
-		return view('sanatorium/hoofmanager::index', compact('examinations', 'houses'));
+		return view('sanatorium/hoofmanager::index', compact('examinations', 'houses', 'vet'));
 	}
 
 	public function start()
 	{
-		return view('sanatorium/hoofmanager::start');
+	    $vet = Vet::getVet();
+
+		return view('sanatorium/hoofmanager::start', compact('vet'));
 	}
 
 	public function animals()
@@ -82,6 +84,8 @@ class HoofController extends Controller {
 
 		$examinations = app('sanatorium.hoofmanager.examination')->get();
 
+        $vet = Vet::getVet();
+
 		$plans = [];
 
 		for ( $i=0; $i < count($checks); $i++ )
@@ -91,7 +95,7 @@ class HoofController extends Controller {
 
 		$houses = app('sanatorium.hoofmanager.houses')->get();
 
-		return view('sanatorium/hoofmanager::plan', compact('plans', 'houses'));
+		return view('sanatorium/hoofmanager::plan', compact('plans', 'houses', 'vet'));
 	}
 
 	public function pdfPlanAll()
@@ -200,7 +204,7 @@ class HoofController extends Controller {
 			}
 		}
 
-		return view('sanatorium/hoofmanager::stats', compact('counts', 'names', 'findings', 'houses', 'items', 'examinations'));
+		return view('sanatorium/hoofmanager::stats', compact('counts', 'names', 'findings', 'houses', 'items', 'examinations', 'vet'));
 	}
 
 	public function statsByHouse() 
@@ -245,5 +249,16 @@ class HoofController extends Controller {
 		return $data;
 
 	}
+
+    public function diseasesAndTreatments()
+    {
+        $vet = Vet::getVet();
+
+        $diseases = app('sanatorium.hoofmanager.diseases')->get();
+
+        $treatments = app('sanatorium.hoofmanager.treatment')->get();
+
+        return view('sanatorium/hoofmanager::diseasesandtreatments/index', compact('vet', 'diseases', 'treatments'));
+    }
 
 }
