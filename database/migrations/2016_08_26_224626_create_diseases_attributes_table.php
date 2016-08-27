@@ -45,9 +45,10 @@ class CreateDiseasesAttributesTable extends Migration {
     {
         $attributesRepo = app('Platform\Attributes\Repositories\AttributeRepositoryInterface');
 
-        foreach( $this->attributes as $attribute )
-        {
+        foreach ($this->attributes as $attribute) {
             $attributesRepo->where('slug', $attribute['slug'])->delete();
         }
+
+    }
 
 }
