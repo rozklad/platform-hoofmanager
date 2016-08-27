@@ -49,6 +49,8 @@
 
                     <th>Název</th>
 
+                    <th>Infekční?</th>
+
                     <th></th>
 
                 </tr>
@@ -64,6 +66,12 @@
                         <td>
 
                             <input type="text" name="name" placeholder="Název" required>
+
+                        </td>
+
+                        <td>
+
+                            <input type="checkbox" name="infectious">
 
                         </td>
 
@@ -90,6 +98,12 @@
                             <td>
 
                                 <input type="text" name="name" value="{{ $disease->name }}" required>
+
+                            </td>
+
+                            <td>
+
+                                <input type="checkbox" name="infectious" {{ ($disease->infectious) ?  "checked" : ""}}>
 
                             </td>
 
@@ -199,7 +213,7 @@
 
                                     @foreach ( $diseases as $disease )
 
-                                        <option {{ ($disease->id == $treatment->id) ? 'selected' : '' }} value="{{ $disease->id }}">{{ $disease->name }}</option>
+                                        <option {{ ($disease->id == $treatment->disease_id) ? 'selected' : '' }} value="{{ $disease->id }}">{{ $disease->name }}</option>
 
                                     @endforeach
 
