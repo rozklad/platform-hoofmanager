@@ -28,6 +28,9 @@ class Vet extends BaseUser {
 
 	public static function isAdmin()
 	{
+        if ( !Sentinel::check() )
+            return false;
+
 		return Sentinel::hasAnyAccess(['admin.dashboard']);
 	}
 
