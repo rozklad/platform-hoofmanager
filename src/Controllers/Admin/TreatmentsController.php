@@ -205,7 +205,7 @@ class TreatmentsController extends AdminController {
 		// Do we have any errors?
 		if ($messages->isEmpty())
 		{
-			return $treatment;
+            return redirect()->route('admin.sanatorium.hoofmanager.treatments.all');
 		}
 
 		return ['success' => false];
