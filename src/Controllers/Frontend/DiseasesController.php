@@ -19,7 +19,9 @@ class DiseasesController extends Controller {
     {
         $diseases = app('sanatorium.hoofmanager.diseases');
 
-        $diseases->store(null, request()->all());
+        list($messages, $disease) = $diseases->store(null, request()->all());
+
+        dd($messages, $disease);
 
         return redirect()->back();
     }
