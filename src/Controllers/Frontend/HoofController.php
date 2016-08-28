@@ -44,6 +44,7 @@ class HoofController extends Controller {
 
 	public function start()
 	{
+
 	    $vet = Vet::getVet();
 
 		return view('sanatorium/hoofmanager::start', compact('vet'));

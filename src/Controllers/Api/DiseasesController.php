@@ -81,7 +81,7 @@ class DiseasesController extends ApiController {
 
 	public function simple()
 	{
-		$cols = Input::has('cols') ? Input::get('cols') : ['id', 'name'];
+		$cols = Input::has('cols') ? Input::get('cols') : ['id', 'name','infectious'];
 
 		$data = $this->diseases->all();
 		

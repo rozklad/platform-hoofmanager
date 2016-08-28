@@ -47,7 +47,7 @@
 
 		<div class="info">
 
-			<h3 class="card-row">Co Hoof Manager umí?</h4>
+			<h3 class="card-row">Co Hoof Manager umí?</h3>
 
 				<h4 class="card-row">Chovy</h4>
 
