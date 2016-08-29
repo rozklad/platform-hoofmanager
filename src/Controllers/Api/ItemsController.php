@@ -84,6 +84,8 @@ class ItemsController extends ApiController {
 			'id',
 			'item_number',
 			'created_at',
+            'birthday',
+            'withdrawn'
 		];
 
 		$settings = [
