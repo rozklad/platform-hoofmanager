@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '3.1.0',
+    'version' => '3.1.1',
 
     /*
     |--------------------------------------------------------------------------
@@ -274,6 +274,8 @@ return [
                 Route::get('{id}', ['as' => 'sanatorium.hoofmanager.api.items.view', 'uses' => 'ItemsController@view']);
 
                 Route::get('bynumber/{id}', ['as' => 'sanatorium.hoofmanager.api.items.view.bynumber', 'uses' => 'ItemsController@viewByNumber']);
+
+                Route::post('update/{id}', ['as' => 'sanatorium.hoofmanager.api.items.update', 'uses' => 'ItemsController@update']);
 
             });
 
