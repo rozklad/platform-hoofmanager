@@ -8,59 +8,60 @@ use Input;
 use Mail;
 use Event;
 
-class ApiController extends Controller {
+class ApiController extends Controller
+{
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected $csrfWhitelist = [
-		'executeAction',
-		'auth'
-	];
+    /**
+     * {@inheritDoc}
+     */
+    protected $csrfWhitelist = [
+        'executeAction',
+        'auth'
+    ];
 
-	protected $except = [
-		'hoofmanager/api/*'
-	];
+    protected $except = [
+        'hoofmanager/api/*'
+    ];
 
-	/**
-	 * The Hoofmanager repository.
-	 *
-	 * @var \Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface
-	 */
-	protected $apilogs;
+    /**
+     * The Hoofmanager repository.
+     *
+     * @var \Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface
+     */
+    protected $apilogs;
 
-	/**
-	 * Holds all the mass actions we can execute.
-	 *
-	 * @var array
-	 */
-	protected $actions = [
-		'delete',
-		'enable',
-		'disable',
-	];
+    /**
+     * Holds all the mass actions we can execute.
+     *
+     * @var array
+     */
+    protected $actions = [
+        'delete',
+        'enable',
+        'disable',
+    ];
 
-	public static $calls = [
+    public static $calls = [
 
-		'api/index' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.index',
-			'description' => 'Test route'
-		],
+        'api/index' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.index',
+            'description' => 'Test route'
+        ],
 
-		'api/auth' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.auth',
-			'description' => 'Autentifikuje uživatele zadaným jménem a heslem, případně vrátí další informace o uživateli',
-			'request' => '
+        'api/auth' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.auth',
+            'description' => 'Autentifikuje uživatele zadaným jménem a heslem, případně vrátí další informace o uživateli',
+            'request' => '
 {
 	"email" : "priklad@example.com",
 	"password" : "heslo1234"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	id: "1",
 	email: "john.doe@example.com",
@@ -77,23 +78,23 @@ class ApiController extends Controller {
 	created_at: "2014-02-17 02:43:01",
 	updated_at: "2014-02-17 02:43:37"
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		'api/register' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.register',
-			'description' => 'Registruje uzivatele do systemu',
-			'request' => '
+        'api/register' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.register',
+            'description' => 'Registruje uzivatele do systemu',
+            'request' => '
 {
 	"email" : "priklad@example.com",
 	"password" : "heslo1234"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '{
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '{
 success: true,
 messages: [],
 user: {
@@ -113,49 +114,49 @@ user: {
 	updated_at: "2014-02-17 02:43:37"
 }
 }'
-				],
-			'error' => [
-					'status' => 200,
-					'content' => '{
+                ],
+                'error' => [
+                    'status' => 200,
+                    'content' => '{
 success: false,
 messages: ["Duvod zamitnuti 1", "Duvod zamitnuti 2"],
 user: null
 }'
-				]
-			]
-		],
-		
-		// houses
-		'api/houses/create' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.houses.create',
-			'description' => 'Vytvoří nový chov se zadaným číslem',
-			'request' => '
+                ]
+            ]
+        ],
+
+        // houses
+        'api/houses/create' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.houses.create',
+            'description' => 'Vytvoří nový chov se zadaným číslem',
+            'request' => '
 {
 	"cattle_number" : "25625235856xxx"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
     id: "1",
     cattle_number : "25625235856xxx",
     created_at: "2014-02-17 02:43:01",
     updated_at: "2014-02-17 02:43:37"
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		'api/houses/grid' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.houses.all',
-			'description' => 'Vypíše seznam založených chovů',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/houses/grid' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.houses.all',
+            'description' => 'Vypíše seznam založených chovů',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	total: 6,
 	filtered: 6,
@@ -220,18 +221,18 @@ user: null
 	}
 	]
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		'api/houses/grid/simple' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.houses.all.simple',
-			'description' => 'Vypíše seznam založených chovů zjednodušeně',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/houses/grid/simple' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.houses.all.simple',
+            'description' => 'Vypíše seznam založených chovů zjednodušeně',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 [
 	{
 		id: 1,
@@ -258,23 +259,23 @@ user: null
 		cattle_number: "123445"
 	}
 ]'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		// diseases
-		'api/diseases/create' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.diseases.create',
-			'description' => 'Vytvoří nový nemoc zadaného jména',
-			'request' => '
+        // diseases
+        'api/diseases/create' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.diseases.create',
+            'description' => 'Vytvoří nový nemoc zadaného jména',
+            'request' => '
 {
 	"name" : "Rusterholzův vřed"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	id: 1,
 	name: "Rusterholzův vřed",
@@ -282,18 +283,18 @@ user: null
 	edit_uri: "http://hoofmanager.rozklad.me/admin/hoofmanager/diseases/1",
 	values: [ ]
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		'api/diseases/grid' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.diseases.all',
-			'description' => 'Vypíše seznam založených nemocí',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/diseases/grid' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.diseases.all',
+            'description' => 'Vypíše seznam založených nemocí',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	total: 1,
 	filtered: 1,
@@ -317,41 +318,41 @@ user: null
 	}
 	]
 }'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		'api/diseases/grid/simple' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.diseases.all.simple',
-			'description' => 'Vypíše seznam založených nemocí zjednodušeně',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/diseases/grid/simple' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.diseases.all.simple',
+            'description' => 'Vypíše seznam založených nemocí zjednodušeně',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 [
 	{
 		id: 1,
 		name: "Rusterholzův vřed"
 	}
 ]'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		// items
-		'api/items/create' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.items.create',
-			'description' => 'Vytvoří kus dobytka',
-			'request' => '
+        // items
+        'api/items/create' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.items.create',
+            'description' => 'Vytvoří kus dobytka',
+            'request' => '
 {
 	"item_number" : "666111"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	id: 50,
 	item_number: "666111",
@@ -359,18 +360,18 @@ user: null
 	edit_uri: "http://hoofmanager.rozklad.me/admin/hoofmanager/items/50",
 	values: [ ]
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		'api/items/grid' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.items.all',
-			'description' => 'Vypíše seznam založených kusů dobytka',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/items/grid' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.items.all',
+            'description' => 'Vypíše seznam založených kusů dobytka',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	total: 19,
 	filtered: 19,
@@ -520,18 +521,18 @@ user: null
 	}
 	]
 }'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		'api/items/grid/simple' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.items.all.simple',
-			'description' => 'Vypíše seznam založených kusů dobytka zjednodušeně',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/items/grid/simple' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.items.all.simple',
+            'description' => 'Vypíše seznam založených kusů dobytka zjednodušeně',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 [
 {
 	id: 1,
@@ -610,16 +611,16 @@ user: null
 	item_number: "766443/566"
 }
 ]'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		// Report
-		'api/report' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.examinations.create',
-			'description' => 'Vytvořit data o vyšetření',
-			'request' => '
+        // Report
+        'api/report' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.examinations.create',
+            'description' => 'Vytvořit data o vyšetření',
+            'request' => '
 {
 	user_id : "3", 		// volitelne (muze byt username+password)
 	examinations: [
@@ -665,28 +666,28 @@ user: null
 		}
 	]
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {success: true}'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		'api/vet/auth' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.vet.auth',
-			'description' => 'Autentifikuje veteřináře zadaným jménem a heslem a vrátí všechna, pro něj validní, data',
-			'request' => '
+        'api/vet/auth' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.vet.auth',
+            'description' => 'Autentifikuje veteřináře zadaným jménem a heslem a vrátí všechna, pro něj validní, data',
+            'request' => '
 {
 	"email" : "priklad@example.com",
 	"password" : "heslo1234"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	id: 3,
 	email: "matejlukas12@gmail.com",
@@ -1519,19 +1520,19 @@ user: null
 	}
 	]
 }'
-				]
-			]
-		],
+                ]
+            ]
+        ],
 
-		// Dobytek
-		'api/items/[id]' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.items.view',
-			'description' => 'Zobrazit detail dobytka',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '{
+        // Dobytek
+        'api/items/[id]' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.items.view',
+            'description' => 'Zobrazit detail dobytka',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '{
 id: 159,
 item_number: "313519953",
 created_at: "2015-09-22 17:54:27",
@@ -2212,19 +2213,19 @@ examinations: [
 }
 ]
 }'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-				// Dobytek
-		'api/items/bynumber/[item_number]' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.items.view.bynumber',
-			'description' => 'Zobrazit detail dobytka podle čísla dobytka',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '{
+        // Dobytek
+        'api/items/bynumber/[item_number]' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.items.view.bynumber',
+            'description' => 'Zobrazit detail dobytka podle čísla dobytka',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '{
 id: 159,
 item_number: "313519953",
 created_at: "2015-09-22 17:54:27",
@@ -2905,19 +2906,19 @@ examinations: [
 }
 ]
 }'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
 
-		'api/treatments/grid' => [
-			'method' => 'GET',
-			'route' => 'sanatorium.hoofmanager.api.treatments.all',
-			'description' => 'Vypíše seznam způsobů léčení',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+        'api/treatments/grid' => [
+            'method' => 'GET',
+            'route' => 'sanatorium.hoofmanager.api.treatments.all',
+            'description' => 'Vypíše seznam způsobů léčení',
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	total: 10,
 	filtered: 10,
@@ -3014,23 +3015,23 @@ examinations: [
 	}
 	]
 }'
-				]
-			],
-		],
+                ]
+            ],
+        ],
 
-		// treatments
-		'api/treatments/create' => [
-			'method' => 'POST',
-			'route' => 'sanatorium.hoofmanager.api.treatments.create',
-			'description' => 'Vytvoří metodu ošetření',
-			'request' => '
+        // treatments
+        'api/treatments/create' => [
+            'method' => 'POST',
+            'route' => 'sanatorium.hoofmanager.api.treatments.create',
+            'description' => 'Vytvoří metodu ošetření',
+            'request' => '
 {
 	"name" : "Název ošetření"
 }',
-			'response' => [
-				'success' => [
-					'status' => 200,
-					'content' => '
+            'response' => [
+                'success' => [
+                    'status' => 200,
+                    'content' => '
 {
 	id: 50,
 	name: "Název ošetření",
@@ -3038,82 +3039,79 @@ examinations: [
 	edit_uri: "http://hoofmanager.rozklad.me/admin/hoofmanager/treatments/50",
 	values: [ ]
 }'
-				]
-			]
-		],
-	];
+                ]
+            ]
+        ],
+    ];
 
 
-	/**
-	 * Constructor.
-	 *
-	 * @param  \Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface  $apilogs
-	 * @return void
-	 */
-	public function __construct(ApilogRepositoryInterface $apilogs)
-	{
-		parent::__construct();
+    /**
+     * Constructor.
+     *
+     * @param  \Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface $apilogs
+     * @return void
+     */
+    public function __construct(ApilogRepositoryInterface $apilogs)
+    {
+        parent::__construct();
 
-		$this->apilogs = $apilogs;
-	}
+        $this->apilogs = $apilogs;
+    }
 
-	public function api()
-	{
-		$this->result = ['test' => 'test'];
-		$this->status = 200;
-		return $this->result;
-	}
+    public function api()
+    {
+        $this->result = ['test' => 'test'];
+        $this->status = 200;
+        return $this->result;
+    }
 
-	public function auth()
-	{
-		$credentials = [
-			'email'    => Input::get('email'),
-			'password' => Input::get('password'),
-		];
+    public function auth()
+    {
+        $credentials = [
+            'email' => Input::get('email'),
+            'password' => Input::get('password'),
+        ];
 
-		if ($user = Sentinel::authenticate($credentials))
-		{
-			$this->status = 200;
-			$this->result = $user;
-		}
-		else
-		{
-			$this->status = 403;
-    		$this->result = ['success' => false];
-		}
-		return $this->result;
-	}
+        if ($user = Sentinel::authenticate($credentials)) {
+            $this->status = 200;
+            $this->result = $user;
+        } else {
+            $this->status = 403;
+            $this->result = ['success' => false];
+        }
+        return $this->result;
+    }
 
-	public function register()
-	{
-		$input = request()->all();
-		$input['password_confirmation'] = $input['password'];
+    public function register()
+    {
+        $input = request()->all();
+        $input['password_confirmation'] = $input['password'];
 
-		// Store the user
+        // Store the user
         list($messages, $user) = app('platform.users')->auth()->register($input);
 
         // Do we have any errors?
         if ($messages->isEmpty()) {
-        	// Activate user
-        	$user->save();
-        	
-        	Event::fire('hoofmanager.registration.success', ['user' => $user]);
+            // Activate user
+            $user->save();
+
+            Event::fire('hoofmanager.registration.success', ['user' => $user]);
 
             return [
-	        	'success' => true,
-	        	'messages' => [],
-	        	'user' => $user
-	        ];
+                'success' => true,
+                'messages' => [],
+                'user' => $user
+            ];
         }
 
         Event::fire('hoofmanager.registration.failed', ['input' => $input]);
 
         return [
-        	'success' => false,
-        	'messages' => $messages,
-        	'user' => null
+            'success' => false,
+            'messages' => $messages,
+            'user' => null
         ];
-	}
+    }
 
     /**
      * Public stats
@@ -3123,7 +3121,7 @@ examinations: [
         // Prirustek nemoci v jednotlivych mesicich
         return [
             [
-                'key' =>  'Eroze patky',
+                'key' => 'Eroze patky',
                 'values' => [
                     [
                         'date' => strtotime('01-01-2016') * 1000,
@@ -3164,7 +3162,7 @@ examinations: [
                 ]
             ],
             [
-                'key' =>  'Vřed chodidla',
+                'key' => 'Vřed chodidla',
                 'values' => [
                     [
                         'date' => strtotime('01-01-2016') * 1000,
@@ -3207,37 +3205,218 @@ examinations: [
         ];
     }
 
-	public function __destruct()
-	{
-		$source = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
-		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+    /*
+     * Top nemoci
+     *
+     */
 
-		$object = [
-			'source' 	=> $source,
-			'method'	=> $method,
+    public function topDiseasesStats()
+    {
 
-			'call' 		=> Route::currentRouteName(),
+        $findings = app('sanatorium.hoofmanager.finding')->get();
 
-			'data' 		=> json_encode( request()->all() )
-			];
+        $diseases = [];
 
-		if ( isset($this->result) ) {
-			$object['result'] = json_encode( $this->result );
-		}
-		if ( isset($this->status) ) {
-			$object['status'] = json_encode( $this->status );
-		}
+        foreach ( $findings as $finding ) {
 
-		if ( isset($this->apilogs) ) {
-			$this->apilogs->create($object);
-		}
+            if ( is_object( $finding->disease()->first() ) ) {
 
-		/*
-		Mail::send('email.api', ['msg' => var_export($object['data'], true)], function($message){
+                array_push($diseases, $finding->disease()->first()->name);
 
-			$message->to('jan.rozklad@gmail.com')->cc('vzink@seznam.cz')->cc('neticek@gmail.com') 
-		});*/
-	}
+            }
+
+        }
+
+        $count = array_count_values($diseases);
+
+        arsort($count);
+
+        $top_diseases = [
+            [
+                'key' => 'Top diseases',
+            ]
+        ];
+
+        $i = 0;
+
+        foreach($count as $key => $value)
+        {
+
+            if ( $i == 5 ) {
+
+                break;
+
+            }
+
+            $top_diseases[0]['values'][$i]['label'] = $key;
+
+            $top_diseases[0]['values'][$i]['value'] = $value;
+
+            $i++;
+
+        }
+
+
+
+        return $top_diseases;
+
+    }
+
+    /*
+     * Top treatments
+     */
+
+    public function topTreatmentsStats()
+    {
+        $findings = app('sanatorium.hoofmanager.finding')->get();
+
+        $treatments = [];
+
+        foreach ( $findings as $finding ) {
+
+            if ( is_object( $finding->treatment()->first() ) ) {
+
+                array_push($treatments, $finding->treatment()->first()->name);
+
+            }
+
+        }
+
+        $count = array_count_values($treatments);
+
+        arsort($count);
+
+        $top_treatments = [
+            [
+                'key' => 'Top treatments',
+            ]
+        ];
+
+        $i = 0;
+
+        foreach($count as $key => $value)
+        {
+
+            if ( $i == 5 ) {
+
+                break;
+
+            }
+
+            $top_treatments[0]['values'][$i]['label'] = $key;
+
+            $top_treatments[0]['values'][$i]['value'] = $value;
+
+            $i++;
+
+        }
+
+        return $top_treatments;
+
+    }
+
+    /*
+     * The worst items
+     */
+
+    public function worstItemsStats()
+    {
+
+        $items = app('sanatorium.hoofmanager.items')->get();
+
+        $items_findings = [];
+
+        $worst_items = [
+            [
+                'key' => 'Worst items',
+            ]
+        ];
+
+        foreach ( $items as $item ) {
+
+            $exam_for_item = $item->examinations()->get();
+
+            foreach ( $exam_for_item as $exam ) {
+
+                $find_for_item = $exam->findings()->get();
+
+                foreach ( $find_for_item as $key => $find ) {
+
+                    if ( is_object($find->disease()->first() ) ) {
+
+                        if ( isset($items_findings[$item->item_number]) ) {
+
+                            $items_findings[$item->item_number] ++;
+
+                        } else {
+
+                            $items_findings[$item->item_number] = 1;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        arsort($items_findings);
+
+        $i = 0;
+
+        foreach ( $items_findings as $key => $value ) {
+
+            if ( $i == 5 ) {
+
+                break;
+
+            }
+
+            $worst_items[0]['values'][$i]['label'] = $key;
+
+            $worst_items[0]['values'][$i]['value'] = $value;
+
+            $i++;
+
+        }
+
+        return $worst_items;
+
+    }
+
+    public function __destruct()
+    {
+        $source = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+
+        $object = [
+            'source' 	=> $source,
+            'method'	=> $method,
+
+            'call' 		=> Route::currentRouteName(),
+
+            'data' 		=> json_encode( request()->all() )
+        ];
+
+        if ( isset($this->result) ) {
+            $object['result'] = json_encode( $this->result );
+        }
+        if ( isset($this->status) ) {
+            $object['status'] = json_encode( $this->status );
+        }
+
+        if ( isset($this->apilogs) ) {
+            $this->apilogs->create($object);
+        }
+
+        /*
+        Mail::send('email.api', ['msg' => var_export($object['data'], true)], function($message){
+
+            $message->to('jan.rozklad@gmail.com')->cc('vzink@seznam.cz')->cc('neticek@gmail.com')
+        });*/
+    }
 
 
 }
