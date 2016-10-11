@@ -3115,6 +3115,98 @@ examinations: [
         ];
 	}
 
+    /**
+     * Public stats
+     */
+    public function stats()
+    {
+        // Prirustek nemoci v jednotlivych mesicich
+        return [
+            [
+                'key' =>  'Eroze patky',
+                'values' => [
+                    [
+                        'date' => strtotime('01-01-2016') * 1000,
+                        'value' => 10
+                    ],
+                    [
+                        'date' => strtotime('01-02-2016') * 1000,
+                        'value' => 20
+                    ],
+                    [
+                        'date' => strtotime('01-03-2016') * 1000,
+                        'value' => 10
+                    ],
+                    [
+                        'date' => strtotime('01-04-2016') * 1000,
+                        'value' => 0
+                    ],
+                    [
+                        'date' => strtotime('01-05-2016') * 1000,
+                        'value' => 0
+                    ],
+                    [
+                        'date' => strtotime('01-06-2016') * 1000,
+                        'value' => 30
+                    ],
+                    [
+                        'date' => strtotime('01-07-2016') * 1000,
+                        'value' => 40
+                    ],
+                    [
+                        'date' => strtotime('01-08-2016') * 1000,
+                        'value' => 5
+                    ],
+                    [
+                        'date' => strtotime('01-09-2016') * 1000,
+                        'value' => 15
+                    ],
+                ]
+            ],
+            [
+                'key' =>  'Vřed chodidla',
+                'values' => [
+                    [
+                        'date' => strtotime('01-01-2016') * 1000,
+                        'value' => 30
+                    ],
+                    [
+                        'date' => strtotime('01-02-2016') * 1000,
+                        'value' => 5
+                    ],
+                    [
+                        'date' => strtotime('01-03-2016') * 1000,
+                        'value' => 10
+                    ],
+                    [
+                        'date' => strtotime('01-04-2016') * 1000,
+                        'value' => 15
+                    ],
+                    [
+                        'date' => strtotime('01-05-2016') * 1000,
+                        'value' => 15
+                    ],
+                    [
+                        'date' => strtotime('01-06-2016') * 1000,
+                        'value' => 5
+                    ],
+                    [
+                        'date' => strtotime('01-07-2016') * 1000,
+                        'value' => 20
+                    ],
+                    [
+                        'date' => strtotime('01-08-2016') * 1000,
+                        'value' => 25
+                    ],
+                    [
+                        'date' => strtotime('01-09-2016') * 1000,
+                        'value' => 35
+                    ],
+                ]
+            ],
+        ];
+    }
+
 	public function __destruct()
 	{
 		$source = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;

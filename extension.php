@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '3.1.3',
+    'version' => '3.1.1',
 
     /*
     |--------------------------------------------------------------------------
@@ -185,6 +185,7 @@ return [
 
             Route::post('diseasesandtreatments/treatment/{id}', ['as' => 'sanatorium.hoofmanager.editTreatment', 'uses' => 'TreatmentsController@edit']);
 
+
             Route::group([
                 'prefix' => 'houses',
             ], function ()
@@ -251,6 +252,8 @@ return [
             Route::any('auth', ['as' => 'sanatorium.hoofmanager.api.auth', 'uses' => 'ApiController@auth']);
 
             Route::any('register', ['as' => 'sanatorium.hoofmanager.api.register', 'uses' => 'ApiController@register']);
+
+            Route::get('stats', ['as' => 'sanatorium.hoofmanager.api.stats', 'uses' => 'ApiController@stats']);
 
             Route::group(['prefix' => 'houses'], function ()
             {

@@ -1,5 +1,16 @@
 @extends('layouts/default_sidebar')
 
+{{-- Chart lib --}}
+{{ Asset::queue('nvd3', 'sanatorium/hoofmanager::nvd3/nv.d3.min.css', 'style') }}
+{{ Asset::queue('d3', 'sanatorium/hoofmanager::nvd3/lib/d3.v3.js', 'jquery') }}
+{{ Asset::queue('nvd3', 'sanatorium/hoofmanager::nvd3/nv.d3.min.js', 'jquery') }}
+{{ Asset::queue('utils', 'sanatorium/hoofmanager::nvd3/src/utils.js', 'jquery') }}
+{{ Asset::queue('tooltip', 'sanatorium/hoofmanager::nvd3/src/tooltip.js', 'jquery') }}
+{{ Asset::queue('interactiveLayer', 'sanatorium/hoofmanager::nvd3/src/interactiveLayer.js', 'jquery') }}
+{{ Asset::queue('axis', 'sanatorium/hoofmanager::nvd3/src/models/axis.js', 'jquery') }}
+{{ Asset::queue('line', 'sanatorium/hoofmanager::nvd3/src/models/line.js', 'jquery') }}
+{{ Asset::queue('lineWithFocusChart', 'sanatorium/hoofmanager::nvd3/src/models/lineWithFocusChart.js', 'jquery') }}
+
 @section('sidebar')
 @parent
 @include('sanatorium/hoofmanager::partials/sidenav')
@@ -18,8 +29,108 @@
 </style>
 @stop
 
+@section('scripts')
+@parent
+	<script type="text/javascript">
+		var $ = jQuery,
+			chart = null;
+		$(function(){
+
+			d3.json('{{ route('sanatorium.hoofmanager.api.stats') }}', function(data) {
+				chart = nv.addGraph(function () {
+					var chart = nv.models.lineChart()
+							.useInteractiveGuideline(true)
+							.x(function (d) {
+								return new Date(d.date)
+							})
+							.y(function (d) {
+								return d.value
+							})
+							.color(d3.scale.category10().range())
+							.clipVoronoi(false);
+
+					chart.xAxis.tickFormat(function (d) {
+						return d3.time.format('%m/%Y')(new Date(d))
+					});
+
+					chart.yAxis.tickFormat(function (d) {
+						return d
+					});
+
+					d3.select('#chart-disease svg')
+							.datum(data)
+							.call(chart);
+
+					nv.utils.windowResize(chart.update);
+
+					return chart;
+				});
+			});
+
+		});
+	</script>
+@stop
+
 {{-- Page content --}}
 @section('page')
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="basicHeader">
+			<h4 class="panel-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion" href="#basic" aria-expanded="true" aria-controls="basic">
+					Basic
+				</a>
+			</h4>
+		</div>
+		<div id="basic" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="basicHeader">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<div id="chart-disease" style="width:100%;height:400px;">
+							<svg></svg>
+						</div>
+					</div>
+					<div class="col-sm-6"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6"></div>
+					<div class="col-sm-6"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="advancedHeader">
+			<h4 class="panel-title">
+				<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="advanced">
+					Advanced
+				</a>
+			</h4>
+		</div>
+		<div id="advanced" class="panel-collapse collapse" role="tabpanel" aria-labelledby="advancedHeader">
+			<div class="panel-body">
+				Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="expertHeader">
+			<h4 class="panel-title">
+				<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#expert" aria-expanded="false" aria-controls="expert">
+					Expert
+				</a>
+			</h4>
+		</div>
+		<div id="expert" class="panel-collapse collapse" role="tabpanel" aria-labelledby="expertHeader">
+			<div class="panel-body">
+				Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 <div class="row">
 
