@@ -7,6 +7,7 @@ use Sentinel;
 use Input;
 use Mail;
 use Event;
+use Sanatorium\Hoofmanager\Models\Finding;
 
 class ApiController extends Controller
 {
@@ -3206,14 +3207,26 @@ examinations: [
     }
 
     /*
-     * Top nemoci
+     * Top diseases
      *
      */
 
-    public function topDiseasesStats()
+    public function topDiseasesStats($houseid)
     {
 
-        $findings = app('sanatorium.hoofmanager.finding')->get();
+        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
+
+            return $q->whereHas('item', function($q) use ($houseid) {
+
+                return $q->whereHas('houses', function($q) use ($houseid) {
+
+                    return $q->where('houses.id', $houseid);
+
+                });
+
+            });
+
+        })->get();
 
         $diseases = [];
 
@@ -3266,9 +3279,24 @@ examinations: [
      * Top treatments
      */
 
-    public function topTreatmentsStats()
+    public function topTreatmentsStats($houseid)
     {
-        $findings = app('sanatorium.hoofmanager.finding')->get();
+
+        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
+
+            return $q->whereHas('item', function($q) use ($houseid) {
+
+                return $q->whereHas('houses', function($q) use ($houseid) {
+
+                    return $q->where('houses.id', $houseid);
+
+                });
+
+            });
+
+        })->get();
+
+        //$findings = app('sanatorium.hoofmanager.finding')->get();
 
         $treatments = [];
 
@@ -3311,6 +3339,12 @@ examinations: [
 
         }
 
+        if ( ! isset($top_treatments[0]['values']) ){
+
+            $top_treatments[0]['values'] = [];
+
+        }
+
         return $top_treatments;
 
     }
@@ -3319,10 +3353,12 @@ examinations: [
      * The worst items
      */
 
-    public function worstItemsStats()
+    public function worstItemsStats($houseid)
     {
 
-        $items = app('sanatorium.hoofmanager.items')->get();
+        $items = app('sanatorium.hoofmanager.houses')->find($houseid)->items()->get();
+
+        //$items = app('sanatorium.hoofmanager.items')->get();
 
         $items_findings = [];
 
@@ -3383,6 +3419,86 @@ examinations: [
         }
 
         return $worst_items;
+
+    }
+
+    /*
+     * Findings in month
+     *
+     */
+
+    public function findingsMonth($houseid)
+    {
+
+        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
+
+            return $q->whereHas('item', function($q) use ($houseid) {
+
+                return $q->whereHas('houses', function($q) use ($houseid) {
+
+                    return $q->where('houses.id', $houseid);
+
+                });
+
+            });
+
+        })->get();
+
+        //$findings = app('sanatorium.hoofmanager.finding')->get();
+
+        $count = [];
+
+        $findings_month = [
+            'count' => 0,
+            /*[
+                'key' => 'Nálezy za měsíc srpen 2016',
+            ]*/
+        ];
+
+        foreach ( $findings as $finding ) {
+
+            $d = date_parse_from_format("Y-m-d", $finding->created_at);
+
+            // && $d['month'] == 8
+
+            if ( $d['year'] == 2016 ) {
+
+                if ( isset($count[$d['month']] ) ) {
+
+                    $count[$d['month']] ++;
+
+                } else {
+
+                    $count[$d['month']] = 1;
+
+                }
+
+            }
+
+            //dd(strtotime('01-01-2016') * 1000);
+
+            //dd(strtotime('01-01-2016') * 1000,strtotime($finding->created_at) * 1000);
+
+        }
+
+        $i = 0;
+
+
+        foreach ( $count as $key => $value ) {
+
+            $date = $key . '. měsíc';
+
+            $findings_month['data'][$i]['label'] = $date;
+
+            $findings_month['data'][$i]['value'] = $value;
+
+            $findings_month['count'] = $findings_month['count'] + $value;
+
+            $i ++;
+
+        }
+
+        return $findings_month;
 
     }
 

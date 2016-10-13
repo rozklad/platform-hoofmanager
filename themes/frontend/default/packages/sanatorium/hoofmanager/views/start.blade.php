@@ -36,7 +36,7 @@
                 chart = null;
         $(function(){
 
-            d3.json('{{ route('sanatorium.hoofmanager.api.stats') }}', function(data) {
+            /*d3.json('{{ route('sanatorium.hoofmanager.api.stats') }}', function(data) {
                 chart = nv.addGraph(function () {
                     var chart = nv.models.lineChart()
                             .useInteractiveGuideline(true)
@@ -133,6 +133,54 @@
                 });
             });
 
+            // Findings in month
+
+            d3.json('{{ route('sanatorium.hoofmanager.api.findingsmonth') }}', function(data) {
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.pieChart()
+                            .x(function(d) { return d.label })
+                            .y(function(d) { return d.value })
+                            .donutRatio(0.4)
+                            .donut(true)
+                            .showLabels(true);
+
+                    d3.select('#chart-findings-month svg')
+                            .datum(data.data)
+                            .call(chart)
+                    ;
+
+                    nv.utils.windowResize(chart.update);
+
+                    var svg = d3.select("#chart-findings-month svg");
+
+                    var donut = svg.selectAll("g.nv-slice").filter(
+                            function (d, i) {
+                                return i == 0;
+                            }
+                    );
+
+                    // Insert first line of text into middle of donut pie chart
+                    donut.insert("text", "g")
+                            .text("Celkem")
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", "-.55em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    donut.insert("text", "g")
+                            .text(data.count)
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", ".95em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    return chart;
+                });
+            });*/
+
+
         });
     </script>
 @stop
@@ -140,7 +188,7 @@
 {{-- Page content --}}
 @section('page')
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <!--<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="basicHeader">
                 <h4 class="panel-title">
@@ -179,6 +227,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4 class="text-center">Nálezy za měsíc srpen 2016</h4>
+                            <div id="chart-findings-month" style="width:100%;height:400px;">
+                                <svg></svg>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -210,7 +268,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
 
 
