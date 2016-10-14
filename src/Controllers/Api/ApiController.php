@@ -3115,7 +3115,7 @@ examinations: [
     }
 
     /**
-     * Public stats
+     * Public houses stats
      */
     public function houseStats($houseid)
     {
@@ -3346,7 +3346,89 @@ examinations: [
 
         }
 
-        // Return data for all charts
+        // Return data for all houses charts
+
+        return $charts_data;
+
+    }
+
+    /*
+     * Public Single item stats
+     */
+
+    public function itemStats($itemid)
+    {
+        // All charts data
+
+        $charts_data = [
+            'fup' => [
+                'count'  => 0,
+                'data' =>
+                    [
+
+                    ],
+            ],
+        ];
+
+        /*
+         * Single Charts
+         */
+
+        // FUP with disease X FUP without disease
+
+        $item = app('sanatorium.hoofmanager.items')->find($itemid);
+
+        $examinations = $item->examinations()->get();
+
+        $findings = [];
+
+        foreach ( $examinations as $examination ) {
+
+            array_push($findings, $examination->findings()->first());
+
+        }
+
+        foreach ( $findings as $finding ) {
+
+            if ( $finding->type == 'FUP' ) {
+
+                if ( is_object($finding->disease()->first()) ) {
+
+                    $charts_data['fup']['data'][0]['label'] = 'S nálezem';
+
+                    $charts_data['fup']['count'] ++;
+
+                    if ( isset( $charts_data['fup']['data'][0]['value'] ) ) {
+
+                        $charts_data['fup']['data'][0]['value'] ++;
+
+                    } else {
+
+                        $charts_data['fup']['data'][0]['value'] = 1;
+
+                    }
+
+                } else {
+
+                    $charts_data['fup']['data'][1]['label'] = 'Bez nálezu';
+
+                    $charts_data['fup']['count'] ++;
+
+                    if ( isset( $charts_data['fup']['data'][1]['value'] ) ) {
+
+                        $charts_data['fup']['data'][1]['value'] ++;
+
+                    } else {
+
+                        $charts_data['fup']['data'][1]['value'] = 1;
+
+                    }
+
+                }
+
+            }
+
+        }
 
         return $charts_data;
 

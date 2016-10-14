@@ -240,6 +240,8 @@
 
             });
 
+            // Loading animation of charts
+
             $(document).on({
 
                 ajaxStart: function() {
@@ -250,6 +252,8 @@
                 }
 
             });
+
+            // Ajax call for charts data
 
             $.ajax({
                 method: "GET",

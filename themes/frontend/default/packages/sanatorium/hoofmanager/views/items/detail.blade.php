@@ -1,218 +1,303 @@
 @extends('layouts/default_sidebar')
 
 @section('sidebar')
-@parent
-@include('sanatorium/hoofmanager::partials/sidenav')
+    @parent
+    @include('sanatorium/hoofmanager::partials/sidenav')
 @stop
+
+{{-- Chart lib --}}
+{{ Asset::queue('nvd3', 'sanatorium/hoofmanager::nvd3/nv.d3.min.css', 'style') }}
+{{ Asset::queue('d3', 'sanatorium/hoofmanager::nvd3/lib/d3.v3.js', 'jquery') }}
+{{ Asset::queue('nvd3', 'sanatorium/hoofmanager::nvd3/nv.d3.min.js', 'jquery') }}
+{{ Asset::queue('utils', 'sanatorium/hoofmanager::nvd3/src/utils.js', 'jquery') }}
+{{ Asset::queue('tooltip', 'sanatorium/hoofmanager::nvd3/src/tooltip.js', 'jquery') }}
+{{ Asset::queue('interactiveLayer', 'sanatorium/hoofmanager::nvd3/src/interactiveLayer.js', 'jquery') }}
+{{ Asset::queue('axis', 'sanatorium/hoofmanager::nvd3/src/models/axis.js', 'jquery') }}
+{{ Asset::queue('line', 'sanatorium/hoofmanager::nvd3/src/models/line.js', 'jquery') }}
+{{ Asset::queue('lineWithFocusChart', 'sanatorium/hoofmanager::nvd3/src/models/lineWithFocusChart.js', 'jquery') }}
 
 {{-- Inline styles --}}
 @section('styles')
-@parent
-<style type="text/css">
+    @parent
+    <style type="text/css">
 
-	.card-row {
+        .card-row {
 
-		display: block;
+            display: block;
 
-	}
+        }
 
-	select {
-		height: 100%;
-		width: 100%;
-	}
+        select {
+            height: 100%;
+            width: 100%;
+        }
 
-	a.info{
-		position:relative;
-		z-index:24;
-		color:#000;
-		text-decoration:none
-	}
+        a.info{
+            position:relative;
+            z-index:24;
+            color:#000;
+            text-decoration:none
+        }
 
-	a.info:hover{
-		z-index:25;
-	}
+        a.info:hover{
+            z-index:25;
+        }
 
-	a.info span{
-		display: none
-	}
+        a.info span{
+            display: none
+        }
 
-	a.info:hover span{
-		display:block;
-		position:absolute;
-		top:2em; left:2em; 
-		width:15em;
-		border:1px solid #0cf;
-		background-color:#cff; 
-		color:#000;
-		text-align: center
-	}
+        a.info:hover span{
+            display:block;
+            position:absolute;
+            top:2em; left:2em;
+            width:15em;
+            border:1px solid #0cf;
+            background-color:#cff;
+            color:#000;
+            text-align: center
+        }
 
-	.new-finding-row th {
-		border-bottom: 1px solid;
-	}
+        .new-finding-row th {
+            border-bottom: 1px solid;
+        }
 
-	.hoof-modal {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		z-index: 9999;
-		display: none;
-		background-color: rgba(0,0,0,0.7);
-	}
+        .hoof-modal {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            display: none;
+            background-color: rgba(0,0,0,0.7);
+        }
 
-	.hoof-modal .hoof-modal-body {
-		position: absolute;
-		top: 30%;
-		left: 30%;
-		right: 30%;
-		background-color: #fff;
-	}
+        .hoof-modal .hoof-modal-body {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            right: 30%;
+            background-color: #fff;
+        }
 
-	.path-active {
-		fill: green;
-	}
+        .path-active {
+            fill: green;
+        }
 
-	#close-hoof-modal {
-		position: absolute;
-		top: 0;
-		right: 0;
-		font-size: 40px;
-		padding: 5px 15px;
-		cursor: pointer;
-	}
+        #close-hoof-modal {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 40px;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
 
-</style>
+    </style>
 @stop
 
 {{-- Scripts --}}
 @section('scripts')
-@parent
+    @parent
 
-<script type="text/javascript">
-	
-	$(function(){
+    <script type="text/javascript">
 
-		$("#subpart_button").on('click', function(){
+        $(function(){
 
-			$(".hoof-modal").fadeIn('slow');
+            $("#subpart_button").on('click', function(){
 
-		});
+                $(".hoof-modal").fadeIn('slow');
 
-		$("#close-hoof-modal").on('click', function(){
+            });
 
-			$(".hoof-modal").fadeOut('slow');
+            $("#close-hoof-modal").on('click', function(){
 
-		})
+                $(".hoof-modal").fadeOut('slow');
 
-		$('.hoof-svg').find("path, rect").on('click', function(){
+            })
 
-			var subpart_id = $(this).attr('subpart');
+            $('.hoof-svg').find("path, rect").on('click', function(){
 
-			$(".path-active").attr("class", "");
+                var subpart_id = $(this).attr('subpart');
 
-			$(this).attr("class", "path-active");
+                $(".path-active").attr("class", "");
 
-			$('#newfinding_subpart_id').val(subpart_id);
-		});
+                $(this).attr("class", "path-active");
 
-	});
+                $('#newfinding_subpart_id').val(subpart_id);
+            });
 
-</script>
+            // Loading animation of charts
+
+            $(document).on({
+
+                ajaxStart: function() {
+                    console.log('start');
+                },
+                ajaxStop: function() {
+                    $('.ajax-loading').remove();
+                }
+
+            });
+
+            /*
+             * Ajax for charts data
+             */
+
+            $.ajax({
+                method: "GET",
+                url: "{{ route('sanatorium.hoofmanager.api.itemstats', ['id' => $item->id]) }}",
+            }).done(function( data ) {
+
+                /*
+                 * Single Charts
+                 */
+
+                // Fup with disease and withou disease
+
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.pieChart()
+                            .x(function(d) { return d.label })
+                            .y(function(d) { return d.value })
+                            .donutRatio(0.4)
+                            .donut(true)
+                            .showLabels(true);
+
+                    d3.select('#chart-fup svg')
+                            .datum(data.fup.data)
+                            .call(chart)
+                    ;
+
+                    nv.utils.windowResize(chart.update);
+
+                    var svg = d3.select("#chart-fup svg");
+
+                    var donut = svg.selectAll("g.nv-slice").filter(
+                            function (d, i) {
+                                return i == 0;
+                            }
+                    );
+
+                    // Insert first line of text into middle of donut pie chart
+                    donut.insert("text", "g")
+                            .text("Celkem")
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", "-.55em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    donut.insert("text", "g")
+                            .text(data.fup.count)
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", ".95em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    return chart;
+                });
+
+
+            }); // End of Ajax
+
+        });
+
+    </script>
 
 @stop
 
 {{-- Page content --}}
 @section('page')
 
-<div class="row">
+    <div class="row">
 
-	<h2 class="card-header">
+        <h2 class="card-header">
 
-		<a href="{{ route('sanatorium.hoofmanager.houses.edit', $house->id) }}"><i class="ion-ios-arrow-thin-left"></i>	</a>
+            <a href="{{ route('sanatorium.hoofmanager.houses.edit', $house->id) }}"><i class="ion-ios-arrow-thin-left"></i>	</a>
 
-		<?php 
+            <?php
 
-		$interval = date_diff(date_create(), date_create($item->birthday));
+            $interval = date_diff(date_create(), date_create($item->birthday));
 
-		//$age = $interval->format("%Y, %M Měsíců, %d Dní");
+            //$age = $interval->format("%Y, %M Měsíců, %d Dní");
 
-		if ( $interval->y ) {
+            if ( $interval->y ) {
 
-			if ( $interval->y <= 1 ) {
+                if ( $interval->y <= 1 ) {
 
-				$year = 'rok';
+                    $year = 'rok';
 
-			} else if ( $interval->y <= 4 ) {
+                } else if ( $interval->y <= 4 ) {
 
-				$year = 'roky';
+                    $year = 'roky';
 
-			} else if ( $interval->y >= 5 ){
+                } else if ( $interval->y >= 5 ){
 
-				$year = 'let';
+                    $year = 'let';
 
-			}
+                }
 
-		} else {
+            } else {
 
-			$year = 'let';
+                $year = 'let';
 
-		}
+            }
 
-		if ( $interval->m ) {
+            if ( $interval->m ) {
 
-			if ( $interval->m <= 1 ) {
+                if ( $interval->m <= 1 ) {
 
-				$month = 'měsíc';
+                    $month = 'měsíc';
 
-			} else if ( $interval->m <= 4 ) {
+                } else if ( $interval->m <= 4 ) {
 
-				$month = 'měsíce';
+                    $month = 'měsíce';
 
-			} else if ( $interval->m >= 5 ) {
+                } else if ( $interval->m >= 5 ) {
 
-				$month = 'měsíců';
+                    $month = 'měsíců';
 
-			}
+                }
 
-		} else {
+            } else {
 
-			$month = 'měsíců';
+                $month = 'měsíců';
 
-		}
+            }
 
-		if ( $interval->d ) {
+            if ( $interval->d ) {
 
-			if ( $interval->d <= 1 ) {
+                if ( $interval->d <= 1 ) {
 
-				$day = 'den';
+                    $day = 'den';
 
-			} else if ( $interval->d <= 4 ) {
+                } else if ( $interval->d <= 4 ) {
 
-				$day = 'dny';
+                    $day = 'dny';
 
-			} else if ( $interval->d >= 5 ) {
+                } else if ( $interval->d >= 5 ) {
 
-				$day = 'dní';
+                    $day = 'dní';
 
-			}
+                }
 
-		} else {
+            } else {
 
-			$day = 'dní';
+                $day = 'dní';
 
-		}
+            }
 
-		$age  = $interval->format('%y ' . $year . ', %m ' . $month . ', %d ' . $day);
+            $age  = $interval->format('%y ' . $year . ', %m ' . $month . ', %d ' . $day);
 
-		?>
+            ?>
 
-		Karta zvířete - # {{ $item->item_number }}, Plemeno: nespecifikovano, Věk: {{ $age }}
+            Karta zvířete - # {{ $item->item_number }}, Plemeno: nespecifikovano, Věk: {{ $age }}
 
-	</h2>
+        </h2>
 
-	<div class="col-md-12">
+        <div class="col-md-12">
 
 		<span class="card-row">
 
@@ -236,9 +321,9 @@
 
 						@foreach ( $houses as $cattle )
 
-						<option value="{{ $cattle->id }}"  <?= ($cattle->id == $house->id ?  'selected ' : '') ?>># {{ $cattle->cattle_number }}, {{ $cattle->company_name }}</option>
+                            <option value="{{ $cattle->id }}"  <?= ($cattle->id == $house->id ?  'selected ' : '') ?>># {{ $cattle->cattle_number }}, {{ $cattle->company_name }}</option>
 
-						@endforeach
+                        @endforeach
 
 					</select>
 
@@ -302,420 +387,453 @@
 					</button>
 				</div>
 
-			<!--@if ( $item->collar )
+            <!--@if ( $item->collar )
 
-			{{ $item->collar }}
+                {{ $item->collar }}
 
-			@else
+            @else
 
-			Aktuálně bez obojku
+                Aktuálně bez obojku
 
-			@endif
-					-->
+                @endif
+                    -->
 
 		</form>
 
 	</span>
 
-	<ul class="nav nav-tabs">
+            <ul class="nav nav-tabs">
 
-		<li class="active">
+                <li>
 
-			<a data-toggle="tab" href="#nalezy">
+                    <a data-toggle="tab" href="#nalezy">
 
-				<h3>Nálezy</h3>
+                        <h3>Nálezy</h3>
 
-			</a>
+                    </a>
 
-		</li>
+                </li>
 
-		<li><a data-toggle="tab" href="#kontroly"><h3>Kontroly</h3></a></li>
-	</ul>
+                <li>
 
-	<div class="tab-content">
+                    <a data-toggle="tab" href="#kontroly">
 
-		<div id="nalezy" class="tab-pane fade in active">
+                        <h3>Kontroly</h3>
 
-			<table class="table">
-				<thead>
-					<th>Typ</th>
-					<th>Datum</th>
-					<th>Nemoc</th>
-					<th>Část</th>
-					<th>Členění</th>
-					<th>Ošetření</th>
-				</thead>
-				<tbody>
+                    </a>
 
-					<!-- Create new examination and finding -->
+                </li>
 
-					<form method="POST" action="{{ $item->id }}/newfinding">
+                <li class="active">
 
-						<tr class="new-finding-row">
+                    <a data-toggle="tab" href="#stats">
 
-							<th>
+                        <h3>Statistiky</h3>
 
-								<select class="form-control" name="newfinding[0][type]" id="type">
+                    </a>
 
-									<option value="">Zvolte typ</option>
+                </li>
 
-									<option value="Kontrola">Kontrola</option>
+            </ul>
 
-									<option value="FUP">FUP</option>
+            <div class="tab-content">
 
-								</select>
+                <div id="nalezy" class="tab-pane fade">
 
-							</th>
+                    <table class="table">
+                        <thead>
+                        <th>Typ</th>
+                        <th>Datum</th>
+                        <th>Nemoc</th>
+                        <th>Část</th>
+                        <th>Členění</th>
+                        <th>Ošetření</th>
+                        </thead>
+                        <tbody>
 
-							<th>
+                        <!-- Create new examination and finding -->
 
-								<input type="datetime" id="created_at" class="form-control" name="newfinding[0][created_at]" value="{{ date('Y-m-d H:i:s') }}">
+                        <form method="POST" action="{{ $item->id }}/newfinding">
 
-							</th>
+                            <tr class="new-finding-row">
 
-							<th>
+                                <th>
 
-								<select class="form-control" name="newfinding[0][disease_id]" id="disease_id">
+                                    <select class="form-control" name="newfinding[0][type]" id="type">
 
-									<option value="">Vyberte nemoc</option>
+                                        <option value="">Zvolte typ</option>
 
-									@foreach ( $diseases as $disease )
+                                        <option value="Kontrola">Kontrola</option>
 
-									<option value="{{ $disease->id }}">{{ $disease->name }}</option>
+                                        <option value="FUP">FUP</option>
 
-									@endforeach
+                                    </select>
 
-								</select>
+                                </th>
 
-							</th>
+                                <th>
 
-							<th>
+                                    <input type="datetime" id="created_at" class="form-control" name="newfinding[0][created_at]" value="{{ date('Y-m-d H:i:s') }}">
 
-								<select class="form-control" name="newfinding[0][part_id]" id="part_id">
+                                </th>
 
-									<option value="">Vyberte končetinu</option>
+                                <th>
 
-									<option value="1">Levá přední</option>
+                                    <select class="form-control" name="newfinding[0][disease_id]" id="disease_id">
 
-									<option value="2">Pravá přední</option>
+                                        <option value="">Vyberte nemoc</option>
 
-									<option value="3">Levá zadní</option>
+                                        @foreach ( $diseases as $disease )
 
-									<option value="4">Pravá zadní</option>
+                                            <option value="{{ $disease->id }}">{{ $disease->name }}</option>
 
-								</select>	
+                                        @endforeach
 
-							</th>
+                                    </select>
 
-							<th>
+                                </th>
 
-								<!-- TODO část končetiny -->
+                                <th>
 
-								<span class="btn btn-succes" style="width:100%" id="subpart_button">
+                                    <select class="form-control" name="newfinding[0][part_id]" id="part_id">
+
+                                        <option value="">Vyberte končetinu</option>
+
+                                        <option value="1">Levá přední</option>
+
+                                        <option value="2">Pravá přední</option>
+
+                                        <option value="3">Levá zadní</option>
+
+                                        <option value="4">Pravá zadní</option>
+
+                                    </select>
+
+                                </th>
+
+                                <th>
+
+                                    <!-- TODO část končetiny -->
+
+                                    <span class="btn btn-succes" style="width:100%" id="subpart_button">
 
 									Vybrat část
 
 								</span>
 
-								<div class="hoof-modal">
+                                    <div class="hoof-modal">
 
-									<div class="hoof-modal-body">
+                                        <div class="hoof-modal-body">
 
-										<span id="close-hoof-modal">X</span>
+                                            <span id="close-hoof-modal">X</span>
 
-										@include('sanatorium/hoofmanager::items/hoof')
+                                            @include('sanatorium/hoofmanager::items/hoof')
 
-									</div>
+                                        </div>
 
-								</div>
+                                    </div>
 
-								<input type="hidden" name="newfinding[0][subpart_id]" id="newfinding_subpart_id">
+                                    <input type="hidden" name="newfinding[0][subpart_id]" id="newfinding_subpart_id">
 
-							</th>
+                                </th>
 
-							<th>
+                                <th>
 
-								<select class="form-control" name="newfinding[0][treatment_id]" id="treatment_id">
+                                    <select class="form-control" name="newfinding[0][treatment_id]" id="treatment_id">
 
-									<option value="">Vyberte ošetření</option>
+                                        <option value="">Vyberte ošetření</option>
 
-									@foreach ( $treatments as $treatment )
+                                        @foreach ( $treatments as $treatment )
 
-									<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+                                            <option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
 
-									@endforeach
+                                        @endforeach
 
-								</select>
+                                    </select>
 
-							</th>
+                                </th>
 
-							<th>
+                                <th>
 
-								<button type="submit" class="btn btn-success" style="width:100%;">
-									<!--{{ trans('action.save') }}--> Nový
-								</button>
+                                    <button type="submit" class="btn btn-success" style="width:100%;">
+                                    <!--{{ trans('action.save') }}--> Nový
+                                    </button>
 
-							</th>
+                                </th>
 
-						</tr>
+                            </tr>
 
-					</form>
+                        </form>
 
 
-					@foreach( $examinations as $examination )
+                        @foreach( $examinations as $examination )
 
-					@foreach( $examination->findings as $finding )
+                            @foreach( $examination->findings as $finding )
 
-					<form method="POST">
+                                <form method="POST">
 
-						<tr>
+                                    <tr>
 
-							<th>
+                                        <th>
 
-								<input class="hidden" id="finding_id" name="finding_id" type="text" value="{{ $finding->id }}">
+                                            <input class="hidden" id="finding_id" name="finding_id" type="text" value="{{ $finding->id }}">
 
-								<select class="form-control" name="type" id="type">
+                                            <select class="form-control" name="type" id="type">
 
-									<option value=""></option>
+                                                <option value=""></option>
 
-									<option <?php echo($finding->type === 'Kontrola') ? 'selected' : '' ?> value="Kontrola">Kontrola</option>
+                                                <option <?php echo($finding->type === 'Kontrola') ? 'selected' : '' ?> value="Kontrola">Kontrola</option>
 
-									<option <?php echo($finding->type === 'FUP') ? 'selected' : '' ?> value="FUP">FUP</option>
+                                                <option <?php echo($finding->type === 'FUP') ? 'selected' : '' ?> value="FUP">FUP</option>
 
-									<option <?php echo($finding->type === 'Založení') ? 'selected' : '' ?> value="Založení">Založení</option>
+                                                <option <?php echo($finding->type === 'Založení') ? 'selected' : '' ?> value="Založení">Založení</option>
 
-									<option <?php echo($finding->type === 'Odebrání obojku') ? 'selected' : '' ?> value="Odebrání obojku">Odebrání obojku</option>
+                                                <option <?php echo($finding->type === 'Odebrání obojku') ? 'selected' : '' ?> value="Odebrání obojku">Odebrání obojku</option>
 
-								</select>
+                                            </select>
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								<input type="datetime" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">	
+                                            <input type="datetime" id="created_at" class="form-control" name="created_at" value="{{ $finding->created_at }}">
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								@if ( is_object($finding->disease) )
+                                            @if ( is_object($finding->disease) )
 
-								<select class="form-control" name="disease_id" id="disease_id">
+                                                <select class="form-control" name="disease_id" id="disease_id">
 
-									@foreach ( $diseases as $disease )
+                                                    @foreach ( $diseases as $disease )
 
-									<option <?php echo($finding->disease->name == $disease->name) ? 'selected' : '' ?>  value="{{ $disease->id }}">{{ $disease->name }}</option>
+                                                        <option <?php echo($finding->disease->name == $disease->name) ? 'selected' : '' ?>  value="{{ $disease->id }}">{{ $disease->name }}</option>
 
-									@endforeach
+                                                    @endforeach
 
-								</select>
+                                                </select>
 
-								@endif
+                                            @endif
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								<?php $part = $finding->part()->first() ?>
+                                            <?php $part = $finding->part()->first() ?>
 
-								@if ( is_object($part) )
+                                            @if ( is_object($part) )
 
-								<select class="form-control" name="part_id" id="part_id">
+                                                <select class="form-control" name="part_id" id="part_id">
 
-									<option value=""></option>
+                                                    <option value=""></option>
 
-									<option <?php echo($part->name === 'Levá přední') ? 'selected' : '' ?> value="1">Levá přední</option>
+                                                    <option <?php echo($part->name === 'Levá přední') ? 'selected' : '' ?> value="1">Levá přední</option>
 
-									<option <?php echo($part->name === 'Pravá přední') ? 'selected' : '' ?> value="2">Pravá přední</option>
+                                                    <option <?php echo($part->name === 'Pravá přední') ? 'selected' : '' ?> value="2">Pravá přední</option>
 
-									<option <?php echo($part->name === 'Levá zadní') ? 'selected' : '' ?> value="3">Levá zadní</option>
+                                                    <option <?php echo($part->name === 'Levá zadní') ? 'selected' : '' ?> value="3">Levá zadní</option>
 
-									<option <?php echo($part->name === 'Pravá zadní') ? 'selected' : '' ?> value="4">Pravá zadní</option>
+                                                    <option <?php echo($part->name === 'Pravá zadní') ? 'selected' : '' ?> value="4">Pravá zadní</option>
 
-								</select>	
+                                                </select>
 
-								@else
+                                            @else
 
-								{{ $finding->part_id }}
+                                                {{ $finding->part_id }}
 
-								@endif
+                                            @endif
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								<?php $subpart = $finding->subpart()->first() ?>
+                                            <?php $subpart = $finding->subpart()->first() ?>
 
-								@if ( is_object($subpart) )
+                                            @if ( is_object($subpart) )
 
-								<input type="text" id="subpart" class="form-control" name="subpart" value="{{ $subpart->label }}">	
+                                                <input type="text" id="subpart" class="form-control" name="subpart" value="{{ $subpart->label }}">
 
-								@else
+                                            @else
 
-								{{ $finding->subpart_id }}
+                                                {{ $finding->subpart_id }}
 
-								@endif
+                                            @endif
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								<?php $treatment_translate = $finding->treatment()->first() ?>
+                                            <?php $treatment_translate = $finding->treatment()->first() ?>
 
 
 
-								<select class="form-control" name="treatment_id" id="treatment_id">
+                                            <select class="form-control" name="treatment_id" id="treatment_id">
 
-									<option value=""></option>
+                                                <option value=""></option>
 
-									@foreach ( $treatments as $treatment )
+                                                @foreach ( $treatments as $treatment )
 
-									@if( is_object($treatment_translate) )
+                                                    @if( is_object($treatment_translate) )
 
-									<option <?php echo($treatment_translate->name == $treatment->name) ? 'selected' : '' ?>  value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+                                                        <option <?php echo($treatment_translate->name == $treatment->name) ? 'selected' : '' ?>  value="{{ $treatment->id }}">{{ $treatment->name }}</option>
 
-									@else
+                                                    @else
 
-									<option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
+                                                        <option value="{{ $treatment->id }}">{{ $treatment->name }}</option>
 
-									@endif
+                                                    @endif
 
-									@endforeach
+                                                @endforeach
 
-								</select>
+                                            </select>
 
 
 
-							</th>
+                                        </th>
 
-							<th>
+                                        <th>
 
-								<button type="submit" class="btn btn-success" style="width:100%;">
-									{{ trans('action.save') }}
-								</button>
+                                            <button type="submit" class="btn btn-success" style="width:100%;">
+                                                {{ trans('action.save') }}
+                                            </button>
 
-							</th>
+                                        </th>
 
-						</tr>
+                                    </tr>
 
-					</form>
+                                </form>
 
-					@endforeach
+                            @endforeach
 
-					@endforeach
+                        @endforeach
 
-				</tbody>
+                        </tbody>
 
-			</table>
+                    </table>
 
-		</div>
+                </div>
 
-		<div id="kontroly" class="tab-pane fade">
+                <div id="kontroly" class="tab-pane fade">
 
-			<table class="table">
-				<thead>
-					<th>Datum kontroly</th>
-					<th>Nález</th>
-					<th>Část</th>
-					<th>Členění</th>
-					<th>Ošetření</th>
-					<th>Ze kdy</th>
-				</thead>
-				<tbody>
+                    <table class="table">
+                        <thead>
+                        <th>Datum kontroly</th>
+                        <th>Nález</th>
+                        <th>Část</th>
+                        <th>Členění</th>
+                        <th>Ošetření</th>
+                        <th>Ze kdy</th>
+                        </thead>
+                        <tbody>
 
-					@foreach( $examinations as $examination )
+                        @foreach( $examinations as $examination )
 
-					@foreach( $examination->findings as $finding )
+                            @foreach( $examination->findings as $finding )
 
-					@if ( $finding->check_date && $finding->check_date != "0000-00-00 00:00:00" )
+                                @if ( $finding->check_date && $finding->check_date != "0000-00-00 00:00:00" )
 
-					<tr>
+                                    <tr>
 
-						<th>
-							
-							{{ date("d. m. Y", strtotime($finding->check_date)) }}
+                                        <th>
 
-						</th>
+                                            {{ date("d. m. Y", strtotime($finding->check_date)) }}
 
-						<th>
-							
-							{{ $finding->disease->name }}
+                                        </th>
 
-						</th>
+                                        <th>
 
-						<th>
-							
-							<?php $part = $finding->part()->first() ?>
+                                            {{ $finding->disease->name }}
 
-							@if ( is_object($part) )
+                                        </th>
 
-							{{ $part->label }}
+                                        <th>
 
-							@else
+                                            <?php $part = $finding->part()->first() ?>
 
-							{{ $finding->part_id }}
+                                            @if ( is_object($part) )
 
-							@endif
+                                                {{ $part->label }}
 
-						</th>
+                                            @else
 
-						<th>
-							
-							<?php $subpart = $finding->subpart()->first() ?>
+                                                {{ $finding->part_id }}
 
-							@if ( is_object($subpart) )
+                                            @endif
 
-							{{ $subpart->label }}
+                                        </th>
 
-							@else
+                                        <th>
 
-							{{ $finding->subpart_id }}
+                                            <?php $subpart = $finding->subpart()->first() ?>
 
-							@endif
+                                            @if ( is_object($subpart) )
 
-						</th>
+                                                {{ $subpart->label }}
 
-						<th>
-							
-							<?php $treatment_translate = $finding->treatment()->first() ?>
+                                            @else
 
-							@if( is_object($treatment_translate) )
+                                                {{ $finding->subpart_id }}
 
-							{{ $treatment_translate->name }}
+                                            @endif
 
-							@else
+                                        </th>
 
-							{{ $finding->treatment }}
+                                        <th>
 
-							@endif
+                                            <?php $treatment_translate = $finding->treatment()->first() ?>
 
-						</select>
+                                            @if( is_object($treatment_translate) )
 
-					</th>
+                                            {{ $treatment_translate->name }}
 
-					<th>
+                                            @else
 
-						{{ date("d. m. Y", strtotime($finding->created_at)) }}
+                                            {{ $finding->treatment }}
 
-					</th>
+                                            @endif
 
-				</tr>
+                                            </select>
 
-				@endif
+                                        </th>
 
-				@endforeach
+                                        <th>
 
-				@endforeach
+                                            {{ date("d. m. Y", strtotime($finding->created_at)) }}
 
-			</tbody>
+                                        </th>
 
-		</table>
+                                    </tr>
 
-	</div>
+                                @endif
 
-</div>
+                            @endforeach
 
-</div>
+                        @endforeach
 
-</div>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="stats" class="tab-pane fade in active">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4 class="text-center">FÚP s nálezem a bez</h4>
+                            <div id="chart-fup" style="width:100%;height:400px;">
+                                <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
+                                <svg></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div> <!-- Tab content -->
+
+        </div>
+
+    </div>
 @stop

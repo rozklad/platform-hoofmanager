@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '3.2.4',
+    'version' => '3.2.5',
 
     /*
     |--------------------------------------------------------------------------
@@ -254,6 +254,8 @@ return [
             Route::any('register', ['as' => 'sanatorium.hoofmanager.api.register', 'uses' => 'ApiController@register']);
 
             Route::get('house-stats/{id}', ['as' => 'sanatorium.hoofmanager.api.housestats', 'uses' => 'ApiController@houseStats']);
+
+            Route::get('item-stats/{id}', ['as' => 'sanatorium.hoofmanager.api.itemstats', 'uses' => 'ApiController@itemStats']);
 
             Route::group(['prefix' => 'houses'], function ()
             {
