@@ -3117,104 +3117,53 @@ examinations: [
     /**
      * Public stats
      */
-    public function stats()
+    public function houseStats($houseid)
     {
-        // Prirustek nemoci v jednotlivych mesicich
-        return [
-            [
-                'key' => 'Eroze patky',
-                'values' => [
-                    [
-                        'date' => strtotime('01-01-2016') * 1000,
-                        'value' => 10
+
+        //Data
+
+        $charts_data = [
+            'top_diseases' => [
+                [
+                    'key'    => 'Nejčastější nemoci',
+                    'values' => [
+
                     ],
-                    [
-                        'date' => strtotime('01-02-2016') * 1000,
-                        'value' => 20
-                    ],
-                    [
-                        'date' => strtotime('01-03-2016') * 1000,
-                        'value' => 10
-                    ],
-                    [
-                        'date' => strtotime('01-04-2016') * 1000,
-                        'value' => 0
-                    ],
-                    [
-                        'date' => strtotime('01-05-2016') * 1000,
-                        'value' => 0
-                    ],
-                    [
-                        'date' => strtotime('01-06-2016') * 1000,
-                        'value' => 30
-                    ],
-                    [
-                        'date' => strtotime('01-07-2016') * 1000,
-                        'value' => 40
-                    ],
-                    [
-                        'date' => strtotime('01-08-2016') * 1000,
-                        'value' => 5
-                    ],
-                    [
-                        'date' => strtotime('01-09-2016') * 1000,
-                        'value' => 15
-                    ],
-                ]
+                ],
             ],
-            [
-                'key' => 'Vřed chodidla',
-                'values' => [
-                    [
-                        'date' => strtotime('01-01-2016') * 1000,
-                        'value' => 30
+            'top_treatments' => [
+                [
+                    'key'    => 'Nejčastější ošetření',
+                    'values' => [
+
                     ],
-                    [
-                        'date' => strtotime('01-02-2016') * 1000,
-                        'value' => 5
+                ],
+            ],
+            'worst_items'    => [
+                [
+                    'key'    => 'Nejproblémovější zvířata',
+                    'values' => [
+
                     ],
+                ],
+            ],
+            'findings_year' => [
+                'count' => 0,
+                'data'  => [
                     [
-                        'date' => strtotime('01-03-2016') * 1000,
-                        'value' => 10
+
                     ],
-                    [
-                        'date' => strtotime('01-04-2016') * 1000,
-                        'value' => 15
-                    ],
-                    [
-                        'date' => strtotime('01-05-2016') * 1000,
-                        'value' => 15
-                    ],
-                    [
-                        'date' => strtotime('01-06-2016') * 1000,
-                        'value' => 5
-                    ],
-                    [
-                        'date' => strtotime('01-07-2016') * 1000,
-                        'value' => 20
-                    ],
-                    [
-                        'date' => strtotime('01-08-2016') * 1000,
-                        'value' => 25
-                    ],
-                    [
-                        'date' => strtotime('01-09-2016') * 1000,
-                        'value' => 35
-                    ],
-                ]
+                ],
             ],
         ];
-    }
 
-    /*
-     * Top diseases
-     *
-     */
+        /*
+         * Single Charts
+         */
 
-    public function topDiseasesStats($houseid)
-    {
+        // Top Diseases
 
-        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
+        $findings = app('sanatorium.hoofmanager.finding')->whereHas('examination', function($q) use ($houseid) {
 
             return $q->whereHas('item', function($q) use ($houseid) {
 
@@ -3244,12 +3193,6 @@ examinations: [
 
         arsort($count);
 
-        $top_diseases = [
-            [
-                'key' => 'Top diseases',
-            ]
-        ];
-
         $i = 0;
 
         foreach($count as $key => $value)
@@ -3261,42 +3204,15 @@ examinations: [
 
             }
 
-            $top_diseases[0]['values'][$i]['label'] = $key;
+            $charts_data['top_diseases'][0]['values'][$i]['label'] = $key;
 
-            $top_diseases[0]['values'][$i]['value'] = $value;
+            $charts_data['top_diseases'][0]['values'][$i]['value'] = $value;
 
             $i++;
 
         }
 
-
-
-        return $top_diseases;
-
-    }
-
-    /*
-     * Top treatments
-     */
-
-    public function topTreatmentsStats($houseid)
-    {
-
-        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
-
-            return $q->whereHas('item', function($q) use ($houseid) {
-
-                return $q->whereHas('houses', function($q) use ($houseid) {
-
-                    return $q->where('houses.id', $houseid);
-
-                });
-
-            });
-
-        })->get();
-
-        //$findings = app('sanatorium.hoofmanager.finding')->get();
+        // Top Treatments
 
         $treatments = [];
 
@@ -3314,12 +3230,6 @@ examinations: [
 
         arsort($count);
 
-        $top_treatments = [
-            [
-                'key' => 'Top treatments',
-            ]
-        ];
-
         $i = 0;
 
         foreach($count as $key => $value)
@@ -3331,42 +3241,19 @@ examinations: [
 
             }
 
-            $top_treatments[0]['values'][$i]['label'] = $key;
+            $charts_data['top_treatments'][0]['values'][$i]['label'] = $key;
 
-            $top_treatments[0]['values'][$i]['value'] = $value;
+            $charts_data['top_treatments'][0]['values'][$i]['value'] = $value;
 
             $i++;
 
         }
 
-        if ( ! isset($top_treatments[0]['values']) ){
-
-            $top_treatments[0]['values'] = [];
-
-        }
-
-        return $top_treatments;
-
-    }
-
-    /*
-     * The worst items
-     */
-
-    public function worstItemsStats($houseid)
-    {
+        // Worst items
 
         $items = app('sanatorium.hoofmanager.houses')->find($houseid)->items()->get();
 
-        //$items = app('sanatorium.hoofmanager.items')->get();
-
         $items_findings = [];
-
-        $worst_items = [
-            [
-                'key' => 'Worst items',
-            ]
-        ];
 
         foreach ( $items as $item ) {
 
@@ -3410,56 +3297,21 @@ examinations: [
 
             }
 
-            $worst_items[0]['values'][$i]['label'] = $key;
+            $charts_data['worst_items'][0]['values'][$i]['label'] = $key;
 
-            $worst_items[0]['values'][$i]['value'] = $value;
+            $charts_data['worst_items'][0]['values'][$i]['value'] = $value;
 
             $i++;
 
         }
 
-        return $worst_items;
-
-    }
-
-    /*
-     * Findings in month
-     *
-     */
-
-    public function findingsMonth($houseid)
-    {
-
-        $findings = Finding::whereHas('examination', function($q) use ($houseid) {
-
-            return $q->whereHas('item', function($q) use ($houseid) {
-
-                return $q->whereHas('houses', function($q) use ($houseid) {
-
-                    return $q->where('houses.id', $houseid);
-
-                });
-
-            });
-
-        })->get();
-
-        //$findings = app('sanatorium.hoofmanager.finding')->get();
+        // Findings in year
 
         $count = [];
-
-        $findings_month = [
-            'count' => 0,
-            /*[
-                'key' => 'Nálezy za měsíc srpen 2016',
-            ]*/
-        ];
 
         foreach ( $findings as $finding ) {
 
             $d = date_parse_from_format("Y-m-d", $finding->created_at);
-
-            // && $d['month'] == 8
 
             if ( $d['year'] == 2016 ) {
 
@@ -3475,10 +3327,6 @@ examinations: [
 
             }
 
-            //dd(strtotime('01-01-2016') * 1000);
-
-            //dd(strtotime('01-01-2016') * 1000,strtotime($finding->created_at) * 1000);
-
         }
 
         $i = 0;
@@ -3488,17 +3336,19 @@ examinations: [
 
             $date = $key . '. měsíc';
 
-            $findings_month['data'][$i]['label'] = $date;
+            $charts_data['findings_year']['data'][$i]['label'] = $date;
 
-            $findings_month['data'][$i]['value'] = $value;
+            $charts_data['findings_year']['data'][$i]['value'] = $value;
 
-            $findings_month['count'] = $findings_month['count'] + $value;
+            $charts_data['findings_year']['count'] = $charts_data['findings_year']['count'] + $value;
 
             $i ++;
 
         }
 
-        return $findings_month;
+        // Return data for all charts
+
+        return $charts_data;
 
     }
 

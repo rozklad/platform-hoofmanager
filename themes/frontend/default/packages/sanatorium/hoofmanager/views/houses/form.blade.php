@@ -83,7 +83,7 @@
 
                 <ul class="nav nav-tabs">
 
-                    <li class="active">
+                    <li>
 
                         <a data-toggle="tab" href="#animals">
 
@@ -93,7 +93,7 @@
 
                     </li>
 
-                    <li>
+                    <li class="active">
 
                         <a data-toggle="tab" href="#stats">
 
@@ -107,7 +107,7 @@
 
                 <div class="tab-content">
 
-                    <div id="animals" class="tab-pane fade in active">
+                    <div id="animals" class="tab-pane fade">
 
                         <div class="col-md-12">
 
@@ -168,7 +168,7 @@
 
                     </div> <!-- Animals tab -->
 
-                    <div id="stats" class="tab-pane fade">
+                    <div id="stats" class="tab-pane fade in active">
 
                         <div class="row">
                             <div class="col-sm-6">
@@ -236,11 +236,15 @@
 
             });
 
-            // Charts
+            $.ajax({
+                method: "GET",
+                url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
+            }).done(function( data ) {
 
-            // Top diseases
+                // Charts
 
-            d3.json('{{ route('sanatorium.hoofmanager.api.topdiseasesstats', ['id' => $house->id]) }}', function(data) {
+                // Top Diseases
+
                 chart = nv.addGraph(function () {
                     var chart = nv.models.discreteBarChart()
                             .x(function(d) { return d.label })
@@ -248,21 +252,20 @@
                             .staggerLabels(true)
                             .tooltips(false)
                             .showValues(true)
+                            .noData('Nedostatek dat')
 
                     d3.select('#chart-top-diseases svg')
-                            .datum(data)
+                            .datum(data.top_diseases)
                             .call(chart)
                     ;
 
                     nv.utils.windowResize(chart.update);
 
                     return chart;
-                });
-            });
+                })
 
-            // Top treatments
+                // Top Treatments
 
-            d3.json('{{ route('sanatorium.hoofmanager.api.toptreatmentsstats', ['id' => $house->id]) }}', function(data) {
                 chart = nv.addGraph(function () {
                     var chart = nv.models.discreteBarChart()
                             .x(function(d) { return d.label })
@@ -273,19 +276,17 @@
                             .noData('Nedostatek dat')
 
                     d3.select('#chart-top-treatments svg')
-                            .datum(data)
+                            .datum(data.top_treatments)
                             .call(chart)
                     ;
 
                     nv.utils.windowResize(chart.update);
 
                     return chart;
-                });
-            });
+                })
 
-            // Worst items
+                // Worst items
 
-            d3.json('{{ route('sanatorium.hoofmanager.api.worstitemsstats', ['id' => $house->id]) }}', function(data) {
                 chart = nv.addGraph(function () {
                     var chart = nv.models.discreteBarChart()
                             .x(function(d) { return d.label })
@@ -295,7 +296,7 @@
                             .showValues(true)
 
                     d3.select('#chart-worst-items svg')
-                            .datum(data)
+                            .datum(data.worst_items)
                             .call(chart)
                     ;
 
@@ -303,11 +304,9 @@
 
                     return chart;
                 });
-            });
 
-            // Findings in year
+                // Findings in year
 
-            d3.json('{{ route('sanatorium.hoofmanager.api.findingsmonth', ['id' => $house->id]) }}', function(data) {
                 chart = nv.addGraph(function () {
                     var chart = nv.models.pieChart()
                             .x(function(d) { return d.label })
@@ -317,7 +316,7 @@
                             .showLabels(true);
 
                     d3.select('#chart-findings-month svg')
-                            .datum(data.data)
+                            .datum(data.findings_year.data)
                             .call(chart)
                     ;
 
@@ -341,7 +340,7 @@
                             .style("fill", "#000");
 
                     donut.insert("text", "g")
-                            .text(data.count)
+                            .text(data.findings_year.count)
                             .attr("class", "middle")
                             .attr("text-anchor", "middle")
                             .attr("dy", ".95em")
@@ -350,8 +349,8 @@
 
                     return chart;
                 });
-            });
 
+            }); // End of Ajax call for charts data
 
         }); // End of ready
 
