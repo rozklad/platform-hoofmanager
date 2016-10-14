@@ -174,12 +174,14 @@
                             <div class="col-sm-6">
                                 <h4 class="text-center">Nejčastější nemoci</h4>
                                 <div id="chart-top-diseases" style="width:100%;height:400px;">
+                                    <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <h4 class="text-center">Nejčastější ošetření</h4>
                                 <div id="chart-top-treatments" style="width:100%;height:400px;">
+                                    <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
                             </div>
@@ -191,6 +193,7 @@
 
                                 <h4 class="text-center">Nejproblémovější zvířata</h4>
                                 <div id="chart-worst-items" style="width:100%;height:400px;">
+                                    <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
 
@@ -200,6 +203,7 @@
 
                                 <h4 class="text-center">Nálezy za rok 2016</h4>
                                 <div id="chart-findings-month" style="width:100%;height:400px;">
+                                    <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
 
@@ -233,6 +237,17 @@
                 $('.new_items').last().after('<div class="form-group inline-form new_items" data-item-count="' + itemCount + '"><input type="text" id="user_id" name="item[' + itemCount + '][user_id]" value="{{ $vet->id }}" hidden><label for="item_number">Číslo zvířete</label># <input type="text" id="item_number" name="item[' + itemCount + '][item_number]" class="form-control" require></div>');
 
                 itemCount++;
+
+            });
+
+            $(document).on({
+
+                ajaxStart: function() {
+                    console.log('start');
+                },
+                ajaxStop: function() {
+                    $('.ajax-loading').remove();
+                }
 
             });
 
