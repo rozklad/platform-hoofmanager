@@ -5,106 +5,165 @@ use Sanatorium\Hoofmanager\Models\Vet;
 
 class HousesController extends Controller {
 
-	/**
-	 * Return the main view.
-	 *
-	 * @return \Illuminate\View\View
-	 */
-	public function index()
-	{
-		return view('sanatorium/hoofmanager::index');
-	}
+    /**
+     * Return the main view.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
+    {
+        return view('sanatorium/hoofmanager::index');
+    }
 
-	public function edit($id)
-	{
-		return $this->showForm($id);
-	}
+    public function edit($id)
+    {
+        return $this->showForm($id);
+    }
 
-	public function update($id)
-	{
-		return $this->processForm('update', $id);
-	}
+    public function update($id)
+    {
+        return $this->processForm('update', $id);
+    }
 
-	/**
-	 * Show the form for creating new houses.
-	 *
-	 * @return \Illuminate\View\View
-	 */
-	public function create()
-	{
-		return $this->showForm('create');
-	}
+    /**
+     * Show the form for creating new houses.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create()
+    {
+        return $this->showForm('create');
+    }
 
-	/**
-	 * Handle posting of the form for creating new houses.
-	 *
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function store()
-	{
-		return $this->processForm('create');
-	}
+    /**
+     * Handle posting of the form for creating new houses.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store()
+    {
+        return $this->processForm('create');
+    }
 
-	public function showForm($id = null)
-	{
-		$houses = app('sanatorium.hoofmanager.houses');
+    public function showForm($id = null)
+    {
+        $houses = app('sanatorium.hoofmanager.houses');
 
-		$items = app('sanatorium.hoofmanager.items');
+        $items = app('sanatorium.hoofmanager.items');
 
-		$vet = Vet::getVet();
+        $examinations = app('sanatorium.hoofmanager.examination');
 
-		if ( $id ) 
-		{
-			$house = $houses->find($id);
-		} else 
-		{
-			$house = $houses->createModel();
+        $vet = Vet::getVet();
 
-			$item = $items->createModel();
-		}
+        if ( $id )
+        {
+            $house = $houses->find($id);
+        } else
+        {
+            $house = $houses->createModel();
 
-		return view('sanatorium/hoofmanager::houses/form', compact('house', 'vet', 'item'));
-	}
+            $item = $items->createModel();
+        }
 
-	/**
-	 * Processes the form.
-	 *
-	 * @param  string  $mode
-	 * @param  int  $id
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	protected function processForm($mode, $id = null)
-	{
-		$this->houses = app('sanatorium.hoofmanager.houses');
+        $houseid = $house->id;
 
-		$this->items = app('sanatorium.hoofmanager.items');
+        $findingsByHouse = app('sanatorium.hoofmanager.finding')->whereHas('examination', function($q) use ($houseid) {
 
-		// Store the houses
-		list($messages, $actual_house) = $this->houses->store($id, request()->house);
+            return $q->whereHas('item', function($q) use ($houseid) {
 
-		foreach (request()->item as $item) {
+                return $q->whereHas('houses', function($q) use ($houseid) {
 
-			if ( isset($item['item_number']) && $item['item_number'] != '' ) {
+                    return $q->where('houses.id', $houseid);
 
-				list($messages_item, $actual_item) = $this->items->store(null, $item);
+                });
 
-				$actual_item->houses()->save($actual_house);
+            });
 
-			}
+        })->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
 
-		} 
+        $checks = [];
 
-		// Do we have any errors?
-		if ($messages->isEmpty())
-		{
-			$this->alerts->success(trans("sanatorium/hoofmanager::houses/message.success.{$mode}"));
+        foreach ( $findingsByHouse as $finding ) {
 
-			return redirect()->route('sanatorium.hoofmanager.front');
-		}
+            $item_id = $examinations->where('id', $finding->examination_id)->first()->item_id;
 
-		$this->alerts->error($messages, 'form');
+            $finding_item = $items->where('id', $item_id)->first();
 
-		return redirect()->back()->withInput();
-	}
+            if ( is_object( $finding->disease()->first() ) ) {
+
+                $disease_name = $finding->disease()->first()->name;
+
+            } else {
+
+                $disease_name = 'Bez nálezu';
+
+            }
+
+            if ( is_object( $finding->treatment()->first() ) ) {
+
+                $treatment_name = $finding->treatment()->first();
+
+            } else {
+
+                $treatment_name = 'Bez ošetření';
+
+            }
+
+            $checks [] = [
+                'item_id' => $finding_item->id,
+                'item_number' => $finding_item->item_number,
+                'data' => [
+                    'disease'       => $disease_name,
+                    'treatment'     => $treatment_name,
+                    'check_date'    => substr($finding->check_date, 0, -strpos($finding->check_date, " ") + 1),
+                    'type'          => $finding->type,
+                ]
+            ];
+
+        }
+
+        return view('sanatorium/hoofmanager::houses/form', compact('house', 'vet', 'item', 'checks'));
+    }
+
+    /**
+     * Processes the form.
+     *
+     * @param  string  $mode
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function processForm($mode, $id = null)
+    {
+        $this->houses = app('sanatorium.hoofmanager.houses');
+
+        $this->items = app('sanatorium.hoofmanager.items');
+
+        // Store the houses
+        list($messages, $actual_house) = $this->houses->store($id, request()->house);
+
+        foreach (request()->item as $item) {
+
+            if ( isset($item['item_number']) && $item['item_number'] != '' ) {
+
+                list($messages_item, $actual_item) = $this->items->store(null, $item);
+
+                $actual_item->houses()->save($actual_house);
+
+            }
+
+        }
+
+        // Do we have any errors?
+        if ($messages->isEmpty())
+        {
+            $this->alerts->success(trans("sanatorium/hoofmanager::houses/message.success.{$mode}"));
+
+            return redirect()->route('sanatorium.hoofmanager.front');
+        }
+
+        $this->alerts->error($messages, 'form');
+
+        return redirect()->back()->withInput();
+    }
 
 }

@@ -11,6 +11,8 @@
 {{ Asset::queue('line', 'sanatorium/hoofmanager::nvd3/src/models/line.js', 'jquery') }}
 {{ Asset::queue('lineWithFocusChart', 'sanatorium/hoofmanager::nvd3/src/models/lineWithFocusChart.js', 'jquery') }}
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js"></script>
+
 @section('sidebar')
     @parent
     @include('sanatorium/hoofmanager::partials/sidenav')
@@ -25,6 +27,30 @@
 
             display: block;
 
+        }
+
+        .tab-pane {
+            padding-top: 20px;
+        }
+
+        #checks table thead tr {
+            border-bottom: 1px solid #ccc;
+        }
+
+        #checks table thead tr th {
+            padding: 10px 0;
+        }
+
+        #checks table tbody tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        #checks table tbody tr td {
+            padding: 20px 0;
+        }
+
+        .link {
+            cursor: pointer;
         }
 
         .buttons-wrapper span {
@@ -98,6 +124,16 @@
                         <a data-toggle="tab" href="#stats">
 
                             <h3>Statistiky</h3>
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a data-toggle="tab" href="#checks">
+
+                            <h3>Kontroly</h3>
 
                         </a>
 
@@ -213,6 +249,76 @@
 
                     </div> <!-- Stats tab -->
 
+                    <div id="checks" class="tab-pane fade">
+
+                        <div id="app">
+
+                            <div class="form-group">
+
+                                <label for="">Od: </label>
+
+                                <input type="date" v-model="startDate">
+
+                                <label for="">Do: </label>
+
+                                <input type="date" v-model="endDate">
+
+                            </div>
+
+                            <table width="100%">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>Číslo zvířete</th>
+
+                                    <th>Nemoc</th>
+
+                                    <th>Ošetření</th>
+
+                                    <th>Datum kontroly</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                <tr v-for="check in checks" v-show="new Date(startDate).getTime() <= new Date(check.data.check_date).getTime() && new Date(check.data.check_date).getTime() <= new Date(endDate).getTime()">
+
+                                    <td>
+                                        <span class="link" @click="toItem(check.item_id)">
+                                            # @{{ check.item_number }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @{{ check.data.disease }}
+                                    </td>
+
+                                    <td>
+                                        @{{ check.data.treatment }}
+                                    </td>
+
+                                    <td>
+                                        @{{ new Date(check.data.check_date).getDate() }}. @{{ new Date(check.data.check_date).getMonth() }}. @{{ new Date(check.data.check_date).getFullYear() }}
+                                    </td>
+
+                                </tr>
+
+                                <tr v-show="checks.length == 0">
+                                    <td colspan="4" class="text-center">Nejsou naplánované žádné kontroly</td>
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div> <!-- Checks tab -->
+
                 </div> <!-- Tab content -->
 
             </div> <!-- col -->
@@ -226,6 +332,45 @@
 @section('scripts')
 
     <script>
+
+        var app = new Vue({
+            el: '#app',
+
+            data() {
+                return {
+                    checks: <?= json_encode($checks) ?>,
+                    startDate: '2015-01-01',
+                }
+            },
+
+            methods: {
+
+                toItem: function(itemId) {
+
+                        var link = '{{ route('sanatorium.hoofmanager.items.edit', ['id' => 0]) }}';
+
+                        link = link.slice(0, link.indexOf("0"));
+
+                        window.location = link + itemId;
+                }
+
+            },
+
+            computed: {
+                endDate: function () {
+                    var d = new Date(),
+                            month = '' + (d.getMonth() + 1),
+                            day = '' + d.getDate(),
+                            year = d.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    return [year, month, day].join('-');
+                }
+            },
+
+        })
 
         $(function(){
 
@@ -255,121 +400,139 @@
 
             // Ajax call for charts data
 
-            $.ajax({
-                method: "GET",
-                url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
-            }).done(function( data ) {
+             $.ajax({
+             method: "GET",
+             url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
+             }).done(function( data ) {
 
-                // Charts
+             // Charts
 
-                // Top Diseases
+             // Top Diseases
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                            .x(function(d) { return d.label })
-                            .y(function(d) { return d.value })
-                            .staggerLabels(true)
-                            .tooltips(false)
-                            .showValues(true)
-                            .noData('Nedostatek dat')
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .tooltips(false)
+             .showValues(true)
+             .noData('Nedostatek dat')
+             ;
 
-                    d3.select('#chart-top-diseases svg')
-                            .datum(data.top_diseases)
-                            .call(chart)
-                    ;
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             d3.select('#chart-top-diseases svg')
+             .datum(data.top_diseases)
+             .call(chart)
+             ;
 
-                    return chart;
-                })
+             nv.utils.windowResize(chart.update);
 
-                // Top Treatments
+             return chart;
+             })
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                            .x(function(d) { return d.label })
-                            .y(function(d) { return d.value })
-                            .staggerLabels(false)
-                            .tooltips(false)
-                            .showValues(true)
-                            .noData('Nedostatek dat')
+             // Top Treatments
 
-                    d3.select('#chart-top-treatments svg')
-                            .datum(data.top_treatments)
-                            .call(chart)
-                    ;
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .tooltips(false)
+             .showValues(true)
+             .noData('Nedostatek dat')
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                    return chart;
-                })
+             d3.select('#chart-top-treatments svg')
+             .datum(data.top_treatments)
+             .call(chart)
+             ;
 
-                // Worst items
+             nv.utils.windowResize(chart.update);
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                            .x(function(d) { return d.label })
-                            .y(function(d) { return d.value })
-                            .staggerLabels(false)
-                            .tooltips(false)
-                            .showValues(true)
+             return chart;
+             })
 
-                    d3.select('#chart-worst-items svg')
-                            .datum(data.worst_items)
-                            .call(chart)
-                    ;
+             // Worst items
 
-                    nv.utils.windowResize(chart.update);
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .tooltips(false)
+             .showValues(true)
+             ;
 
-                    return chart;
-                });
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                // Findings in year
+             d3.select('#chart-worst-items svg')
+             .datum(data.worst_items)
+             .call(chart)
+             ;
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.pieChart()
-                            .x(function(d) { return d.label })
-                            .y(function(d) { return d.value })
-                            .donutRatio(0.4)
-                            .donut(true)
-                            .showLabels(true);
+             nv.utils.windowResize(chart.update);
 
-                    d3.select('#chart-findings-month svg')
-                            .datum(data.findings_year.data)
-                            .call(chart)
-                    ;
+             return chart;
+             });
 
-                    nv.utils.windowResize(chart.update);
+             // Findings in year
 
-                    var svg = d3.select("#chart-findings-month svg");
+             chart = nv.addGraph(function () {
+             var chart = nv.models.pieChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .donutRatio(0.4)
+             .donut(true)
+             .showLabels(true);
 
-                    var donut = svg.selectAll("g.nv-slice").filter(
-                            function (d, i) {
-                                return i == 0;
-                            }
-                    );
+             d3.select('#chart-findings-month svg')
+             .datum(data.findings_year.data)
+             .call(chart)
+             ;
 
-                    // Insert first line of text into middle of donut pie chart
-                    donut.insert("text", "g")
-                            .text("Celkem")
-                            .attr("class", "middle")
-                            .attr("text-anchor", "middle")
-                            .attr("dy", "-.55em")
-                            .style("font-size", "24px")
-                            .style("fill", "#000");
+             nv.utils.windowResize(chart.update);
 
-                    donut.insert("text", "g")
-                            .text(data.findings_year.count)
-                            .attr("class", "middle")
-                            .attr("text-anchor", "middle")
-                            .attr("dy", ".95em")
-                            .style("font-size", "24px")
-                            .style("fill", "#000");
+             var svg = d3.select("#chart-findings-month svg");
 
-                    return chart;
-                });
+             var donut = svg.selectAll("g.nv-slice").filter(
+             function (d, i) {
+             return i == 0;
+             }
+             );
 
-            }); // End of Ajax call for charts data
+             // Insert first line of text into middle of donut pie chart
+             donut.insert("text", "g")
+             .text("Celkem")
+             .attr("class", "middle")
+             .attr("text-anchor", "middle")
+             .attr("dy", "-.55em")
+             .style("font-size", "24px")
+             .style("fill", "#000");
+
+             donut.insert("text", "g")
+             .text(data.findings_year.count)
+             .attr("class", "middle")
+             .attr("text-anchor", "middle")
+             .attr("dy", ".95em")
+             .style("font-size", "24px")
+             .style("fill", "#000");
+
+             return chart;
+             });
+
+             }); // End of Ajax call for charts data 
 
         }); // End of ready
 
