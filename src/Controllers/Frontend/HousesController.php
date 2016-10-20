@@ -101,7 +101,7 @@ class HousesController extends Controller {
 
             if ( is_object( $finding->treatment()->first() ) ) {
 
-                $treatment_name = $finding->treatment()->first();
+                $treatment_name = $finding->treatment()->first()->name;
 
             } else {
 
