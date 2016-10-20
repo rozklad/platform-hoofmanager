@@ -85,6 +85,9 @@ class HoofController extends Controller {
 
 		$examinations = app('sanatorium.hoofmanager.examination')->get();
 
+        if ( !Sentinel::check() )
+            return redirect()->route('user.login');
+
         $vet = Vet::getVet();
 
 		$plans = [];

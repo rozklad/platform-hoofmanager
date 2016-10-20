@@ -1,164 +1,173 @@
 @extends('layouts/default_sidebar')
 
 @section('sidebar')
-@parent
-@include('sanatorium/hoofmanager::partials/sidenav')
+    @parent
+    @include('sanatorium/hoofmanager::partials/sidenav')
 @stop
 
 {{-- Inline styles --}}
 @section('styles')
-@parent
-<style type="text/css">
+    @parent
+    <style type="text/css">
 
-	.card-row {
+        .card-row {
 
-		display: block;
+            display: block;
 
-	}
+        }
 
-</style>
+    </style>
 @stop
 
 @section('scripts')
 
-<script>
-	
-	$(function(){
+    <script>
 
-		$('#print_house').change(function(){
+        $(function(){
 
-			var url = "{{ route('sanatorium.hoofmanager.plan.pdf.single')}}";
+            $('#print_house').change(function(){
 
-			url = url.substr(0, url.indexOf('%'));
+                var url = "{{ route('sanatorium.hoofmanager.plan.pdf.single')}}";
 
-			window.location.href = url + $(this).val();
+                url = url.substr(0, url.indexOf('%'));
 
-		});
+                window.location.href = url + $(this).val();
 
-	});
+            });
 
-</script>
+        });
+
+    </script>
 
 @stop
 
 {{-- Page content --}}
 @section('page')
 
-<div class="row">
+    <div class="row">
 
-	<a href="{{ route('sanatorium.hoofmanager.plan.pdf.all') }}">Tisk všeho</a>
+        <a href="{{ route('sanatorium.hoofmanager.plan.pdf.all') }}">Tisk všeho</a>
 
-	<select name="print_house" id="print_house">
+        <select name="print_house" id="print_house">
 
-		<option value="">Vyberte chov pro tisk plánu</option>
-		
-		@foreach ( $houses as $house )
+            <option value="">Vyberte chov pro tisk plánu</option>
 
-		@if ( $house->cattle_number && $house->company_name )
+            @foreach ( $houses as $house )
 
-		<option value="{{ $house->id }}">{{ $house->cattle_number }} {{ $house->company_name }}</option>
+                @if ( is_object($house) )
 
-		@endif
+                    @if ( $house->cattle_number && $house->company_name )
 
-		@endforeach
+                        <option value="{{ $house->id }}">{{ $house->cattle_number }} {{ $house->company_name }}</option>
 
-	</select>
+                    @endif
 
-	<h2 class="card-header">
+                @endif
 
-		Plán
+            @endforeach
 
-	</h2>
+        </select>
 
-	<div class="col-md-12">
+        <h2 class="card-header">
 
-		<h3 class="card-row">Naplánované kontroly</h3>
+            Plán
 
-	</div>
+        </h2>
 
-	<table class="table">
+        <div class="col-md-12">
 
-		<thead>
-			<th>Datum kontroly</th>
-			<th>Chov</th>
-			<th>Zvíře</th>
-		</thead>
+            <h3 class="card-row">Naplánované kontroly</h3>
 
-		<tbody>
+        </div>
 
-			@foreach ( $plans as $plan )
+        <table class="table">
 
-			@foreach ( $plan->findings as $finding )
+            <thead>
+            <th>Datum kontroly</th>
+            <th>Chov</th>
+            <th>Zvíře</th>
+            </thead>
 
-			<tr>
+            <tbody>
 
-				@if ( $finding->check_date != '0000-00-00 00:00:00' )
+            @foreach ( $plans as $plan )
 
-				<th>
+                @if ( is_object($plan) )
 
-					<?php 
+                    @foreach ( $plan->findings as $finding )
 
-					$date_string = $finding->check_date;
+                        <tr>
 
-					$date_string = substr($date_string, 0, strpos($date_string, " "));
+                            @if ( is_object($finding) )
 
-					$date = date_create_from_format('Y-m-d', $date_string);
+                                @if ( $finding->check_date != '0000-00-00 00:00:00' )
 
-					echo date("d. m. Y", $date->getTimestamp());
+                                    <th>
 
-					?>
+                                        <?php
 
+                                        $date_string = $finding->check_date;
 
+                                        $date_string = substr($date_string, 0, strpos($date_string, " "));
 
-				</th>
+                                        $date = date_create_from_format('Y-m-d', $date_string);
 
-				@endif
+                                        echo date("d. m. Y", $date->getTimestamp());
 
-				@if ( $finding->check_date != '0000-00-00 00:00:00')
-
-					@if ( is_object($plan->item) )
-				<?php $house = $plan->item->houses()->first(); ?>
-
-				<th>
-
-					<a href="{{ route('sanatorium.hoofmanager.houses.edit', ['id' => $house->id]) }}">
-
-						# {{ $house->cattle_number }}, <?php echo($house->company_name) ? $house->company_name : 'Název nebyl vyplněn' ?>
-
-					</a>
-
-				</th>
-					@endif
+                                        ?>
 
 
-				@endif
 
-				@if ( $finding->check_date != '0000-00-00 00:00:00' )
+                                    </th>
 
-					@if ( is_object($plan->item) )
-				<th>
+                                    @if ( is_object($plan->item) )
 
-					<a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $plan->item_id]) }}">
+                                        <?php $house = $plan->item->houses()->first(); ?>
 
-						{{ $plan->item->item_number }}
+                                        @if ( is_object($house) )
 
-					</a>
+                                            <th>
 
-				</th>
-					@endif
+                                                <a href="{{ route('sanatorium.hoofmanager.houses.edit', ['id' => $house->id]) }}">
 
-				@endif
+                                                    # {{ $house->cattle_number }}, <?php echo($house->company_name) ? $house->company_name : 'Název nebyl vyplněn' ?>
 
-			</tr>
+                                                </a>
 
-			@endforeach
+                                            </th>
 
-			@endforeach
+                                        @endif
+                                    @endif
 
-		</tbody>
 
-	</table>
+                                    @if ( is_object($plan->item) )
+                                        <th>
 
-</div>
+                                            <a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $plan->item_id]) }}">
+
+                                                {{ $plan->item->item_number }}
+
+                                            </a>
+
+                                        </th>
+                                    @endif
+
+                                @endif
+
+                            @endif
+
+                        </tr>
+
+                    @endforeach
+
+                @endif
+
+            @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 @stop

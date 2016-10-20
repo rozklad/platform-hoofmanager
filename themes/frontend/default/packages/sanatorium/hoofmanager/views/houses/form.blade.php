@@ -57,6 +57,14 @@
             margin: 10px 0 20px 0;
         }
 
+        .nv-x .nv-axislabel {
+            font-weight: 700;
+        }
+
+        .nv-y .nv-axislabel {
+            font-weight: 700;
+        }
+
     </style>
 @stop
 
@@ -209,14 +217,14 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <h4 class="text-center">Nejčastější nemoci</h4>
-                                <div id="chart-top-diseases" style="width:100%;height:400px;">
+                                <div id="chart-top-diseases" style="width:100%;height:420px;">
                                     <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <h4 class="text-center">Nejčastější ošetření</h4>
-                                <div id="chart-top-treatments" style="width:100%;height:400px;">
+                                <div id="chart-top-treatments" style="width:100%;height:420px;">
                                     <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
@@ -228,7 +236,7 @@
                             <div class="col-sm-6">
 
                                 <h4 class="text-center">Nejproblémovější zvířata</h4>
-                                <div id="chart-worst-items" style="width:100%;height:400px;">
+                                <div id="chart-worst-items" style="width:100%;height:420px;">
                                     <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
@@ -238,7 +246,7 @@
                             <div class="col-sm-6">
 
                                 <h4 class="text-center">Nálezy za rok 2016</h4>
-                                <div id="chart-findings-month" style="width:100%;height:400px;">
+                                <div id="chart-findings-month" style="width:100%;height:420px;">
                                     <div class="ajax-loading" style="width:100%; height: 100%; background: url({{ Asset::getUrl('sanatorium/hoofmanager::ajax-loader.gif') }}) no-repeat center;"></div>
                                     <svg></svg>
                                 </div>
@@ -289,7 +297,7 @@
 
                                     <td>
                                         <span class="link" @click="toItem(check.item_id)">
-                                            # @{{ check.item_number }}
+                                        # @{{ check.item_number }}
                                         </span>
                                     </td>
 
@@ -347,11 +355,11 @@
 
                 toItem: function(itemId) {
 
-                        var link = '{{ route('sanatorium.hoofmanager.items.edit', ['id' => 0]) }}';
+                    var link = '{{ route('sanatorium.hoofmanager.items.edit', ['id' => 0]) }}';
 
-                        link = link.slice(0, link.indexOf("0"));
+                    link = link.slice(0, link.indexOf("0"));
 
-                        window.location = link + itemId;
+                    window.location = link + itemId;
                 }
 
             },
@@ -400,139 +408,157 @@
 
             // Ajax call for charts data
 
-             $.ajax({
-             method: "GET",
-             url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
-             }).done(function( data ) {
+            $.ajax({
+                method: "GET",
+                url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
+            }).done(function( data ) {
 
-             // Charts
+                // Charts
 
-             // Top Diseases
+                // Top Diseases
 
-             chart = nv.addGraph(function () {
-             var chart = nv.models.discreteBarChart()
-             .x(function(d) { return d.label })
-             .y(function(d) { return d.value })
-             .staggerLabels(true)
-             .tooltips(false)
-             .showValues(true)
-             .noData('Nedostatek dat')
-             ;
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.discreteBarChart()
+                                    .x(function(d) { return d.label })
+                                    .y(function(d) { return d.value })
+                                    .staggerLabels(true)
+                                    .height(380)
+                                    .tooltips(false)
+                                    .showValues(true)
+                                    .noData('Nedostatek dat')
+                            ;
 
-             chart.yAxis
-             .axisLabel('Počet nálezů')
-             .axisLabelDistance(40)
-             ;
+                    chart.yAxis
+                            .axisLabel('Počet nálezů')
+                            .axisLabelDistance(40)
+                    ;
 
-             d3.select('#chart-top-diseases svg')
-             .datum(data.top_diseases)
-             .call(chart)
-             ;
+                    chart.xAxis
+                            .axisLabel('Nemoci')
+                            .axisLabelDistance(10)
+                    ;
 
-             nv.utils.windowResize(chart.update);
+                    d3.select('#chart-top-diseases svg')
+                            .datum(data.top_diseases)
+                            .call(chart)
+                    ;
 
-             return chart;
-             })
+                    nv.utils.windowResize(chart.update);
 
-             // Top Treatments
+                    return chart;
+                })
 
-             chart = nv.addGraph(function () {
-             var chart = nv.models.discreteBarChart()
-             .x(function(d) { return d.label })
-             .y(function(d) { return d.value })
-             .staggerLabels(true)
-             .tooltips(false)
-             .showValues(true)
-             .noData('Nedostatek dat')
-             ;
+                // Top Treatments
 
-             chart.yAxis
-             .axisLabel('Počet nálezů')
-             .axisLabelDistance(40)
-             ;
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.discreteBarChart()
+                                    .x(function(d) { return d.label })
+                                    .y(function(d) { return d.value })
+                                    .staggerLabels(true)
+                                    .tooltips(false)
+                                    .showValues(true)
+                                    .height(380)
+                                    .noData('Nedostatek dat')
+                            ;
 
-             d3.select('#chart-top-treatments svg')
-             .datum(data.top_treatments)
-             .call(chart)
-             ;
+                    chart.yAxis
+                            .axisLabel('Počet nálezů')
+                            .axisLabelDistance(40)
+                    ;
 
-             nv.utils.windowResize(chart.update);
+                    chart.xAxis
+                            .axisLabel('Ošetření')
+                            .axisLabelDistance(10)
+                    ;
 
-             return chart;
-             })
+                    d3.select('#chart-top-treatments svg')
+                            .datum(data.top_treatments)
+                            .call(chart)
+                    ;
 
-             // Worst items
+                    nv.utils.windowResize(chart.update);
 
-             chart = nv.addGraph(function () {
-             var chart = nv.models.discreteBarChart()
-             .x(function(d) { return d.label })
-             .y(function(d) { return d.value })
-             .staggerLabels(true)
-             .tooltips(false)
-             .showValues(true)
-             ;
+                    return chart;
+                })
 
-             chart.yAxis
-             .axisLabel('Počet nálezů')
-             .axisLabelDistance(40)
-             ;
+                // Worst items
 
-             d3.select('#chart-worst-items svg')
-             .datum(data.worst_items)
-             .call(chart)
-             ;
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.discreteBarChart()
+                                    .x(function(d) { return d.label })
+                                    .y(function(d) { return d.value })
+                                    .staggerLabels(true)
+                                    .tooltips(false)
+                                    .height(380)
+                                    .showValues(true)
+                            ;
 
-             nv.utils.windowResize(chart.update);
+                    chart.yAxis
+                            .axisLabel('Počet nálezů')
+                            .axisLabelDistance(40)
+                    ;
 
-             return chart;
-             });
+                    chart.xAxis
+                            .axisLabel('Čísla zvířat')
+                            .axisLabelDistance(10)
+                    ;
 
-             // Findings in year
+                    d3.select('#chart-worst-items svg')
+                            .datum(data.worst_items)
+                            .call(chart)
+                    ;
 
-             chart = nv.addGraph(function () {
-             var chart = nv.models.pieChart()
-             .x(function(d) { return d.label })
-             .y(function(d) { return d.value })
-             .donutRatio(0.4)
-             .donut(true)
-             .showLabels(true);
+                    nv.utils.windowResize(chart.update);
 
-             d3.select('#chart-findings-month svg')
-             .datum(data.findings_year.data)
-             .call(chart)
-             ;
+                    return chart;
+                });
 
-             nv.utils.windowResize(chart.update);
+                // Findings in year
 
-             var svg = d3.select("#chart-findings-month svg");
+                chart = nv.addGraph(function () {
+                    var chart = nv.models.pieChart()
+                            .x(function(d) { return d.label })
+                            .y(function(d) { return d.value })
+                            .donutRatio(0.4)
+                            .donut(true)
+                            .showLabels(true);
 
-             var donut = svg.selectAll("g.nv-slice").filter(
-             function (d, i) {
-             return i == 0;
-             }
-             );
+                    d3.select('#chart-findings-month svg')
+                            .datum(data.findings_year.data)
+                            .call(chart)
+                    ;
 
-             // Insert first line of text into middle of donut pie chart
-             donut.insert("text", "g")
-             .text("Celkem")
-             .attr("class", "middle")
-             .attr("text-anchor", "middle")
-             .attr("dy", "-.55em")
-             .style("font-size", "24px")
-             .style("fill", "#000");
+                    nv.utils.windowResize(chart.update);
 
-             donut.insert("text", "g")
-             .text(data.findings_year.count)
-             .attr("class", "middle")
-             .attr("text-anchor", "middle")
-             .attr("dy", ".95em")
-             .style("font-size", "24px")
-             .style("fill", "#000");
+                    var svg = d3.select("#chart-findings-month svg");
 
-             return chart;
-             });
+                    var donut = svg.selectAll("g.nv-slice").filter(
+                            function (d, i) {
+                                return i == 0;
+                            }
+                    );
 
-             }); // End of Ajax call for charts data 
+                    // Insert first line of text into middle of donut pie chart
+                    donut.insert("text", "g")
+                            .text("Celkem")
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", "-.55em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    donut.insert("text", "g")
+                            .text(data.findings_year.count)
+                            .attr("class", "middle")
+                            .attr("text-anchor", "middle")
+                            .attr("dy", ".95em")
+                            .style("font-size", "24px")
+                            .style("fill", "#000");
+
+                    return chart;
+                });
+
+            }); // End of Ajax call for charts data
 
         }); // End of ready
 
