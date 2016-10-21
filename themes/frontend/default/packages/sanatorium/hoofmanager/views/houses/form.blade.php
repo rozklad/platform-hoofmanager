@@ -310,7 +310,7 @@
                                     </td>
 
                                     <td>
-                                        @{{ new Date(check.data.check_date).getDate() }}. @{{ new Date(check.data.check_date).getMonth() }}. @{{ new Date(check.data.check_date).getFullYear() }}
+                                        @{{ new Date(check.data.check_date).getDate() }}. @{{ new Date(check.data.check_date).getMonth() + 1 }}. @{{ new Date(check.data.check_date).getFullYear() }}
                                     </td>
 
                                 </tr>
@@ -348,6 +348,7 @@
                 return {
                     checks: <?= json_encode($checks) ?>,
                     startDate: '2015-01-01',
+                    today: '',
                 }
             },
 
@@ -366,7 +367,7 @@
 
             computed: {
                 endDate: {
-                    get: function () {
+                    get: function ( ) {
                         var d = new Date(),
                                 month = '' + (d.getMonth() + 1),
                                 day = '' + d.getDate(),
@@ -375,10 +376,20 @@
                         if (month.length < 2) month = '0' + month;
                         if (day.length < 2) day = '0' + day;
 
-                        return [year, month, day].join('-');
+                        if ( ! this.today ) {
+
+                            return [year, month, day].join('-');
+
+                        } else {
+
+                            return this.today;
+
+                        }
+
+
                     },
                     set: function (val) {
-                        return val;
+                        this.today = val;
                     }
                 },
             },
@@ -413,7 +424,7 @@
 
             // Ajax call for charts data
 
-            $.ajax({
+            /*$.ajax({
                 method: "GET",
                 url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
             }).done(function( data ) {
@@ -563,7 +574,7 @@
                     return chart;
                 });
 
-            }); // End of Ajax call for charts data
+            }); // End of Ajax call for charts data*/
 
         }); // End of ready
 
