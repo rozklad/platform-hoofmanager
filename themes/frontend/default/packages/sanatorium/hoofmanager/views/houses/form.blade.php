@@ -424,7 +424,7 @@
 
             // Ajax call for charts data
 
-            /*$.ajax({
+            $.ajax({
                 method: "GET",
                 url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
             }).done(function( data ) {
@@ -574,7 +574,7 @@
                     return chart;
                 });
 
-            }); // End of Ajax call for charts data*/
+            }); // End of Ajax call for charts data
 
         }); // End of ready
 
