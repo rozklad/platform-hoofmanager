@@ -347,8 +347,8 @@
             data() {
                 return {
                     checks: <?= json_encode($checks) ?>,
-                    startDate: '2015-01-01',
                     today: '',
+                    future: '',
                 }
             },
 
@@ -366,8 +366,8 @@
             },
 
             computed: {
-                endDate: {
-                    get: function ( ) {
+                startDate: {
+                    get: function () {
                         var d = new Date(),
                                 month = '' + (d.getMonth() + 1),
                                 day = '' + d.getDate(),
@@ -376,23 +376,49 @@
                         if (month.length < 2) month = '0' + month;
                         if (day.length < 2) day = '0' + day;
 
-                        if ( ! this.today ) {
+                        if (!this.today) {
 
                             return [year, month, day].join('-');
 
                         } else {
 
                             return this.today;
-
                         }
-
-
                     },
                     set: function (val) {
+
                         this.today = val;
+
                     }
                 },
+                endDate: {
+                    get: function () {
+                        var d = new Date();
+                        d.setDate(d.getDate() + 14);
+                        var month = '' + (d.getMonth() + 1),
+                            day = '' + d.getDate(),
+                            year = d.getFullYear();
+
+                        if (month.length < 2) month = '0' + month;
+                        if (day.length < 2) day = '0' + day;
+
+                        if (!this.future) {
+
+                            return [year, month, day].join('-');
+
+                        } else {
+
+                            return this.future;
+
+                        }
+                },
+                set: function (val) {
+
+                    this.future = val;
+
+                }
             },
+        },
 
         })
 
@@ -424,157 +450,157 @@
 
             // Ajax call for charts data
 
-            $.ajax({
-                method: "GET",
-                url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
-            }).done(function( data ) {
+            /*$.ajax({
+             method: "GET",
+             url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
+             }).done(function( data ) {
 
-                // Charts
+             // Charts
 
-                // Top Diseases
+             // Top Diseases
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                                    .x(function(d) { return d.label })
-                                    .y(function(d) { return d.value })
-                                    .staggerLabels(true)
-                                    .height(380)
-                                    .tooltips(false)
-                                    .showValues(true)
-                                    .noData('Nedostatek dat')
-                            ;
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .height(380)
+             .tooltips(false)
+             .showValues(true)
+             .noData('Nedostatek dat')
+             ;
 
-                    chart.yAxis
-                            .axisLabel('Počet nálezů')
-                            .axisLabelDistance(40)
-                    ;
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                    chart.xAxis
-                            .axisLabel('Nemoci')
-                            .axisLabelDistance(10)
-                    ;
+             chart.xAxis
+             .axisLabel('Nemoci')
+             .axisLabelDistance(10)
+             ;
 
-                    d3.select('#chart-top-diseases svg')
-                            .datum(data.top_diseases)
-                            .call(chart)
-                    ;
+             d3.select('#chart-top-diseases svg')
+             .datum(data.top_diseases)
+             .call(chart)
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             nv.utils.windowResize(chart.update);
 
-                    return chart;
-                })
+             return chart;
+             })
 
-                // Top Treatments
+             // Top Treatments
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                                    .x(function(d) { return d.label })
-                                    .y(function(d) { return d.value })
-                                    .staggerLabels(true)
-                                    .tooltips(false)
-                                    .showValues(true)
-                                    .height(380)
-                                    .noData('Nedostatek dat')
-                            ;
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .tooltips(false)
+             .showValues(true)
+             .height(380)
+             .noData('Nedostatek dat')
+             ;
 
-                    chart.yAxis
-                            .axisLabel('Počet nálezů')
-                            .axisLabelDistance(40)
-                    ;
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                    chart.xAxis
-                            .axisLabel('Ošetření')
-                            .axisLabelDistance(10)
-                    ;
+             chart.xAxis
+             .axisLabel('Ošetření')
+             .axisLabelDistance(10)
+             ;
 
-                    d3.select('#chart-top-treatments svg')
-                            .datum(data.top_treatments)
-                            .call(chart)
-                    ;
+             d3.select('#chart-top-treatments svg')
+             .datum(data.top_treatments)
+             .call(chart)
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             nv.utils.windowResize(chart.update);
 
-                    return chart;
-                })
+             return chart;
+             })
 
-                // Worst items
+             // Worst items
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.discreteBarChart()
-                                    .x(function(d) { return d.label })
-                                    .y(function(d) { return d.value })
-                                    .staggerLabels(true)
-                                    .tooltips(false)
-                                    .height(380)
-                                    .showValues(true)
-                            ;
+             chart = nv.addGraph(function () {
+             var chart = nv.models.discreteBarChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .staggerLabels(true)
+             .tooltips(false)
+             .height(380)
+             .showValues(true)
+             ;
 
-                    chart.yAxis
-                            .axisLabel('Počet nálezů')
-                            .axisLabelDistance(40)
-                    ;
+             chart.yAxis
+             .axisLabel('Počet nálezů')
+             .axisLabelDistance(40)
+             ;
 
-                    chart.xAxis
-                            .axisLabel('Čísla zvířat')
-                            .axisLabelDistance(10)
-                    ;
+             chart.xAxis
+             .axisLabel('Čísla zvířat')
+             .axisLabelDistance(10)
+             ;
 
-                    d3.select('#chart-worst-items svg')
-                            .datum(data.worst_items)
-                            .call(chart)
-                    ;
+             d3.select('#chart-worst-items svg')
+             .datum(data.worst_items)
+             .call(chart)
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             nv.utils.windowResize(chart.update);
 
-                    return chart;
-                });
+             return chart;
+             });
 
-                // Findings in year
+             // Findings in year
 
-                chart = nv.addGraph(function () {
-                    var chart = nv.models.pieChart()
-                            .x(function(d) { return d.label })
-                            .y(function(d) { return d.value })
-                            .donutRatio(0.4)
-                            .donut(true)
-                            .showLabels(true);
+             chart = nv.addGraph(function () {
+             var chart = nv.models.pieChart()
+             .x(function(d) { return d.label })
+             .y(function(d) { return d.value })
+             .donutRatio(0.4)
+             .donut(true)
+             .showLabels(true);
 
-                    d3.select('#chart-findings-month svg')
-                            .datum(data.findings_year.data)
-                            .call(chart)
-                    ;
+             d3.select('#chart-findings-month svg')
+             .datum(data.findings_year.data)
+             .call(chart)
+             ;
 
-                    nv.utils.windowResize(chart.update);
+             nv.utils.windowResize(chart.update);
 
-                    var svg = d3.select("#chart-findings-month svg");
+             var svg = d3.select("#chart-findings-month svg");
 
-                    var donut = svg.selectAll("g.nv-slice").filter(
-                            function (d, i) {
-                                return i == 0;
-                            }
-                    );
+             var donut = svg.selectAll("g.nv-slice").filter(
+             function (d, i) {
+             return i == 0;
+             }
+             );
 
-                    // Insert first line of text into middle of donut pie chart
-                    donut.insert("text", "g")
-                            .text("Celkem")
-                            .attr("class", "middle")
-                            .attr("text-anchor", "middle")
-                            .attr("dy", "-.55em")
-                            .style("font-size", "24px")
-                            .style("fill", "#000");
+             // Insert first line of text into middle of donut pie chart
+             donut.insert("text", "g")
+             .text("Celkem")
+             .attr("class", "middle")
+             .attr("text-anchor", "middle")
+             .attr("dy", "-.55em")
+             .style("font-size", "24px")
+             .style("fill", "#000");
 
-                    donut.insert("text", "g")
-                            .text(data.findings_year.count)
-                            .attr("class", "middle")
-                            .attr("text-anchor", "middle")
-                            .attr("dy", ".95em")
-                            .style("font-size", "24px")
-                            .style("fill", "#000");
+             donut.insert("text", "g")
+             .text(data.findings_year.count)
+             .attr("class", "middle")
+             .attr("text-anchor", "middle")
+             .attr("dy", ".95em")
+             .style("font-size", "24px")
+             .style("fill", "#000");
 
-                    return chart;
-                });
+             return chart;
+             });
 
-            }); // End of Ajax call for charts data
+             }); // End of Ajax call for charts data*/
 
         }); // End of ready
 

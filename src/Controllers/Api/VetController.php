@@ -11,98 +11,170 @@ use Sentinel;
 class VetController extends ApiController {
 
 
-	/**
-	 * Show the form for creating new houses.
-	 *
-	 * @return \Illuminate\View\View
-	 */
-	public function auth()
-	{
-		$credentials = [
-		'email'    => Input::get('email'),
-		'password' => Input::get('password'),
-		];
+    /**
+     * Show the form for creating new houses.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function auth()
+    {
+        $credentials = [
+            'email'    => Input::get('email'),
+            'password' => Input::get('password'),
+        ];
+
+        $diseases = app('sanatorium.hoofmanager.diseases')->get();
+
+        $treatments = app('sanatorium.hoofmanager.treatment')->get();
 
 
+        if ($user = Sentinel::authenticate($credentials))
+        {
+            $this->status = 200;
+            $this->result = $this->find($user->id);
+            $this->result->diseases = $diseases;
+            $this->result->treatments = $treatments;
 
-		if ($user = Sentinel::authenticate($credentials))
-		{
-			$this->status = 200;
-			$this->result = $this->find($user->id);
-		}
-		else
-		{
-			$this->status = 403;
-			$this->result = ['success' => false];
-		}
-		return $this->result;
-	}
+            /*$i = 0;
 
-	public function find($id = null)
-	{
-		// @todo make more efficient
-		$vet = Vet::find($id);
+            foreach ( $this->result->houses as $house ) {
 
-		$houses = [];
+                foreach ( $house->items as $item ) {
 
-		if ( $vet->isAdmin() ) {
+                    foreach ( $item->examinations()->orderBy('created_at', 'DESC')->get() as $examination ) {
 
-			foreach( House::all() as $house ) {
-				$houses[$house->id] = $house;
-			}
+                        foreach ( $examination->findings()->get() as $finding ) {
 
-		} else {
+                            $findings_data = $item->findings_data;
 
-			foreach( House::all()->where('user_id', $vet->id) as $house ) {
-				$houses[$house->id] = $house;
-			}
+                            if ( is_object($finding->disease()->first()) ) {
 
-		}
+                                $disease_name = $finding->disease()->first()->name;
 
-		$vet->houses = $houses;
+                            } else {
 
-		return $vet;
-	}
+                                $disease_name = 'Bez nálezu';
 
-	public function checks($id = null)
-	{
-		$vet = Vet::find($id);
+                            }
 
-		$checks = [];
+                            if ( is_object($finding->treatment()->first()) ) {
 
-		$items = [];
+                                $treatment_name = $finding->treatment()->first()->name;
 
-		$findings = Finding::whereHas('examination', function($q)  use ($vet) {
+                            } else {
 
-			return $q->where('user_id', $vet->id);
+                                $treatment_name = 'Bez ošetření';
 
-		})->whereNotNull('check_date')->where('check_date', '!=', '0000-00-00 00:00:00')->get();
+                            }
 
-		foreach ($findings as $finding) {
-			
-			$item_id = $finding->examination()->first()->item_id;
+                            if ( is_object($finding->part()->first()) ) {
 
-			if ( Item::find($item_id) ) {
+                                $part_name = $finding->part()->first()->name;
 
-				$item = Item::find($item_id);
+                            } else {
 
-				$house = $item->houses()->first();
+                                $part_name = '';
 
-				$finding['cattle_number'] = $house->cattle_number;
+                            }
 
-				$finding['item_number'] = $item->item_number;
+                            $findings_data[$i]['item_number'] = $item->item_number;
 
-				/*$examination[$finding->id] = [$finding];
+                            $findings_data[$i]['findings'][$i]['disease'] = $disease_name;
 
-				$items[$item_id] = ['item_id' => $item_id, 'item_number' => $item->item_number, 'findings' => $examination];
+                            $findings_data[$i]['findings'][$i]['treatment'] = $treatment_name;
 
-				$checks[$house->id] = ['house_id' => $house->id, 'cattle_number' => $house->cattle_number, 'items' => $items];*/
+                            $findings_data[$i]['findings'][$i]['part'] = $part_name;
 
-			}
+                            $findings_data[$i]['findings'][$i]['check_date'] = $finding->check_date;
 
-		}
+                            $findings_data[$i]['findings'][$i]['type'] = $finding->type;
 
-		return $findings;
-		
-	}
+                            $i++;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            $this->result->findings = $findings_data;*/
+
+        }
+        else
+        {
+            $this->status = 403;
+            $this->result = ['success' => false];
+        }
+        return $this->result;
+    }
+
+    public function find($id = null)
+    {
+        // @todo make more efficient
+        $vet = Vet::find($id);
+
+        $houses = [];
+
+        if ( $vet->isAdmin() ) {
+
+            foreach( House::all() as $house ) {
+                $houses[$house->id] = $house;
+            }
+
+        } else {
+
+            foreach( House::all()->where('user_id', $vet->id) as $house ) {
+                $houses[$house->id] = $house;
+            }
+
+        }
+
+        $vet->houses = $houses;
+
+        return $vet;
+    }
+
+    public function checks($id = null)
+    {
+        $vet = Vet::find($id);
+
+        $checks = [];
+
+        $items = [];
+
+        $findings = Finding::whereHas('examination', function($q)  use ($vet) {
+
+            return $q->where('user_id', $vet->id);
+
+        })->whereNotNull('check_date')->where('check_date', '!=', '0000-00-00 00:00:00')->get();
+
+        foreach ($findings as $finding) {
+
+            $item_id = $finding->examination()->first()->item_id;
+
+            if ( Item::find($item_id) ) {
+
+                $item = Item::find($item_id);
+
+                $house = $item->houses()->first();
+
+                $finding['cattle_number'] = $house->cattle_number;
+
+                $finding['item_number'] = $item->item_number;
+
+                /*$examination[$finding->id] = [$finding];
+
+                $items[$item_id] = ['item_id' => $item_id, 'item_number' => $item->item_number, 'findings' => $examination];
+
+                $checks[$house->id] = ['house_id' => $house->id, 'cattle_number' => $house->cattle_number, 'items' => $items];*/
+
+            }
+
+        }
+
+        return $findings;
+
+    }
 }
