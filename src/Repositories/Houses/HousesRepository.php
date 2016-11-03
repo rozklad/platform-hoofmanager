@@ -113,7 +113,9 @@ class HousesRepository implements HousesRepositoryInterface {
 		if ( isset($input['items']) )
 		{
 			$items = array_pull($input, 'items');
-		}
+		} else {
+		    $items = [];
+        }
 
 		// Prepare the submitted data
 		$data = $this->data->prepare($input);
