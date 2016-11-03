@@ -45,7 +45,7 @@ class HousesController extends Controller {
         return $this->processForm('create');
     }
 
-    public function showForm($id = null)
+    public function showForm(/* $mode = 'create' */ $id = null)
     {
         $houses = app('sanatorium.hoofmanager.houses');
 
@@ -58,7 +58,8 @@ class HousesController extends Controller {
         if ( $id )
         {
             $house = $houses->find($id);
-        } else
+        }
+        if ( !is_object($house) )
         {
             $house = $houses->createModel();
 
