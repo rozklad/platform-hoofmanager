@@ -100,7 +100,7 @@
                     <input type="text" id="company_name" class="form-control" name="house[company_name]" value="<?php echo isset($house) ? $house->company_name : ' ' ;?>">
                 </div>
                 <div class="form-group">
-                    <label for="cattle_number" class="control-label">ID chovu</label>
+                    <label for="cattle_number" class="control-label">Číslo chovu</label>
                     <input type="text" id="cattle_number" class="form-control" name="house[cattle_number]" value="<?php echo isset($house) ? $house->cattle_number : ' ' ;?>">
                 </div>
                 <div class="form-group">
@@ -202,11 +202,6 @@
 
                                 <span class="btn btn-primary btn-block" id="more_items">Přidat další</span>
 
-                                <button type="submit" class="btn btn-success" style="width:100%;">
-
-                                    {{ trans('action.save') }}
-
-                                </button>
                             </div>
                         </fieldset>
 
@@ -297,7 +292,7 @@
 
                                     <td>
                                         <span class="link" @click="toItem(check.item_id)">
-                                        # @{{ check.item_number }}
+                                        #CZ@{{ check.item_number }}
                                         </span>
                                     </td>
 
@@ -326,6 +321,12 @@
                         </div>
 
                     </div> <!-- Checks tab -->
+
+                    <button type="submit" class="btn btn-success" style="width:100%;">
+
+                        {{ trans('action.save') }}
+
+                    </button>
 
                 </div> <!-- Tab content -->
 
