@@ -163,7 +163,7 @@
 
                                         <a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $item->id]) }}" class="card-row">
 
-                                            Číslo: # {{ $item->item_number }}
+                                            Číslo: #CZ{{ $item->item_number }}
 
                                         </a>
 
@@ -191,7 +191,7 @@
 
                                 <label for="item_number">Číslo zvířete</label>
 
-                                # <input type="text" id="item_number" name="item[0][item_number]" class="form-control" require>
+                                #CZ <input type="text" id="item_number" name="item[0][item_number]" class="form-control" require>
 
                             </div>
 
