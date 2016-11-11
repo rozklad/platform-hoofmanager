@@ -157,8 +157,14 @@ class VetController extends ApiController {
 
         }
 
+        $diseases = app('sanatorium.hoofmanager.diseases')->get();
+
+        $treatments = app('sanatorium.hoofmanager.treatment')->get();
+
         $vet->houses = $houses;
         $vet->findings = $findings;
+        $vet->diseases = $diseases;
+        $vet->treatments = $treatments;
 
         return $vet;
     }

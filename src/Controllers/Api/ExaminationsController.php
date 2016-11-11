@@ -22,6 +22,7 @@ class ExaminationsController extends ApiController {
 
 		foreach ( $examinations as $examination )
 		{
+		    /* TODO better */
             $item_id = app('sanatorium.hoofmanager.items')->where('item_number', $examination['item_number'])->first()->id;
 
 			$examinationObj = new Examination();
