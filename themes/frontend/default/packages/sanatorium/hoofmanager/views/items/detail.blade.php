@@ -743,7 +743,15 @@
 
                                         <th>
 
-                                            {{ $finding->disease->name }}
+                                            @if ( is_object($finding->disease) )
+
+                                                {{ $finding->disease->name }}
+
+                                            @else
+
+                                                Bez nálezu
+
+                                            @endif
 
                                         </th>
 

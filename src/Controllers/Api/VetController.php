@@ -35,6 +35,20 @@ class VetController extends ApiController {
             $this->result->diseases = $diseases;
             $this->result->treatments = $treatments;
 
+            $examinations = app('sanatorium.hoofmanager.examination')->where('user_id', $user->id)->get();
+
+            $findings = [];
+
+            foreach ( $examinations as $examination ) {
+
+                $item_number = app('sanatorium.hoofmanager.items')->find($examination->item_id)->item_number;
+
+                $findings[$item_number][] = $examination->findings()->get();
+
+            }
+
+            $this->result->findings = $findings;
+
             /*$i = 0;
 
             foreach ( $this->result->houses as $house ) {
@@ -117,6 +131,18 @@ class VetController extends ApiController {
 
         $houses = [];
 
+        $examinations = app('sanatorium.hoofmanager.examination')->where('user_id', $vet->id)->get();
+
+        $findings = [];
+
+        foreach ( $examinations as $examination ) {
+
+            $item_number = app('sanatorium.hoofmanager.items')->find($examination->item_id)->item_number;
+
+            $findings[$item_number][] = $examination->findings()->get();
+
+        }
+
         if ( $vet->isAdmin() ) {
 
             foreach( House::all() as $house ) {
@@ -132,6 +158,7 @@ class VetController extends ApiController {
         }
 
         $vet->houses = $houses;
+        $vet->findings = $findings;
 
         return $vet;
     }

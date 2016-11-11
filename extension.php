@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '3.2.15',
+    'version' => '3.2.16',
 
     /*
     |--------------------------------------------------------------------------
@@ -261,6 +261,8 @@ return [
             {
 
                 Route::post('create', ['as' => 'sanatorium.hoofmanager.api.houses.create', 'uses' => 'HousesController@store']);
+
+                Route::post('update/{id}', ['as' => 'sanatorium.hoofmanager.api.houses.update', 'uses' => 'HousesController@update']);
 
                 Route::get('grid', ['as' => 'sanatorium.hoofmanager.api.houses.all', 'uses' => 'HousesController@grid']);
 
