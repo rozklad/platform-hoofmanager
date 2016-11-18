@@ -68,10 +68,6 @@ class HoofController extends Controller {
 
 		}
 
-		$findings = app('sanatorium.hoofmanager.finding');
-
-		$examinations = app('sanatorium.hoofmanager.examination');
-
 		$items = app('sanatorium.hoofmanager.items')->get();
 
 		return view('sanatorium/hoofmanager::animals', compact('houses', 'vet', 'items'));
@@ -81,21 +77,14 @@ class HoofController extends Controller {
 	public function plan()
 	{
 
-		$checks = app('sanatorium.hoofmanager.finding')->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
+	    /* TODO just for user */
 
-		$examinations = app('sanatorium.hoofmanager.examination')->get();
+		$plans = app('sanatorium.hoofmanager.finding')->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
 
         if ( !Sentinel::check() )
             return redirect()->route('user.login');
 
         $vet = Vet::getVet();
-
-		$plans = [];
-
-		for ( $i=0; $i < count($checks); $i++ )
-		{
-			array_push($plans, $examinations->where('id', $checks[$i]->examination_id)->first());
-		}
 
 		$houses = app('sanatorium.hoofmanager.houses')->get();
 
@@ -177,19 +166,15 @@ class HoofController extends Controller {
 
 		if ( $vet->isAdmin() ) {
 
-			$examinations = Examination::all();
+			//$examinations = Examination::all();
 
-			$findings = Finding::all();
+			$findings = app('sanatorium.hoofmanager.finding')->get();
 
 		} else {
 
-			$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
+			//$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
 
-			$findings = Finding::whereHas('examination', function($q)  use ($vet) {
-
-				return $q->where('user_id', $vet->id);
-
-			})->get();
+            $findings = app('sanatorium.hoofmanager.finding')->where('user_id', $vet->id);
 
 		}
 
@@ -208,7 +193,7 @@ class HoofController extends Controller {
 			}
 		}
 
-		return view('sanatorium/hoofmanager::stats', compact('counts', 'names', 'findings', 'houses', 'items', 'examinations', 'vet'));
+		return view('sanatorium/hoofmanager::stats', compact('counts', 'names', 'findings', 'houses', 'items', 'vet'));
 	}
 
 	public function statsByHouse() 

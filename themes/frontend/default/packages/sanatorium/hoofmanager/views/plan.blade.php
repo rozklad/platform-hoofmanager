@@ -90,77 +90,69 @@
 
             <tbody>
 
-            @foreach ( $plans as $plan )
+            @foreach ( $plans as $finding )
 
-                @if ( is_object($plan) )
+                <tr>
 
-                    @foreach ( $plan->findings as $finding )
+                    @if ( is_object($finding) )
 
-                        <tr>
+                        @if ( $finding->check_date != '0000-00-00 00:00:00' )
 
-                            @if ( is_object($finding) )
+                            <th>
 
-                                @if ( $finding->check_date != '0000-00-00 00:00:00' )
+                                <?php
+
+                                $date_string = $finding->check_date;
+
+                                $date_string = substr($date_string, 0, strpos($date_string, " "));
+
+                                $date = date_create_from_format('Y-m-d', $date_string);
+
+                                echo date("d. m. Y", $date->getTimestamp());
+
+                                ?>
+
+
+
+                            </th>
+
+                            @if ( is_object($finding->item) )
+
+                                <?php $house = $finding->item->houses()->first(); ?>
+
+                                @if ( is_object($house) )
 
                                     <th>
 
-                                        <?php
+                                        <a href="{{ route('sanatorium.hoofmanager.houses.edit', ['id' => $house->id]) }}">
 
-                                        $date_string = $finding->check_date;
+                                            # {{ $house->cattle_number }}, <?php echo($house->company_name) ? $house->company_name : 'Název nebyl vyplněn' ?>
 
-                                        $date_string = substr($date_string, 0, strpos($date_string, " "));
-
-                                        $date = date_create_from_format('Y-m-d', $date_string);
-
-                                        echo date("d. m. Y", $date->getTimestamp());
-
-                                        ?>
-
-
+                                        </a>
 
                                     </th>
 
-                                    @if ( is_object($plan->item) )
-
-                                        <?php $house = $plan->item->houses()->first(); ?>
-
-                                        @if ( is_object($house) )
-
-                                            <th>
-
-                                                <a href="{{ route('sanatorium.hoofmanager.houses.edit', ['id' => $house->id]) }}">
-
-                                                    # {{ $house->cattle_number }}, <?php echo($house->company_name) ? $house->company_name : 'Název nebyl vyplněn' ?>
-
-                                                </a>
-
-                                            </th>
-
-                                        @endif
-                                    @endif
-
-
-                                    @if ( is_object($plan->item) )
-                                        <th>
-
-                                            <a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $plan->item_id]) }}">
-
-                                                {{ $plan->item->item_number }}
-
-                                            </a>
-
-                                        </th>
-                                    @endif
-
                                 @endif
-
                             @endif
 
-                        </tr>
 
-                    @endforeach
+                            @if ( is_object($finding->item) )
+                                <th>
 
-                @endif
+                                    <a href="{{ route('sanatorium.hoofmanager.items.edit', ['id' => $finding->item_id]) }}">
+
+                                        {{ $finding->item->item_number }}
+
+                                    </a>
+
+                                </th>
+                            @endif
+
+                        @endif
+
+                    @endif
+
+                </tr>
 
             @endforeach
 

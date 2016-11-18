@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'version' => '3.2.17',
+    'version' => '3.2.18',
 
     /*
     |--------------------------------------------------------------------------
@@ -131,7 +131,6 @@ return [
         'Sanatorium\Hoofmanager\Providers\DiseasesServiceProvider',
         'Sanatorium\Hoofmanager\Providers\PartsServiceProvider',
         'Sanatorium\Hoofmanager\Providers\SubpartServiceProvider',
-        'Sanatorium\Hoofmanager\Providers\ExaminationServiceProvider',
         'Sanatorium\Hoofmanager\Providers\FindingServiceProvider',
         'Sanatorium\Hoofmanager\Providers\TreatmentServiceProvider',
 
@@ -297,14 +296,14 @@ return [
 
             });
 
-            Route::group(['prefix' => 'examinations'], function ()
+            Route::group(['prefix' => 'findings'], function ()
             {
 
-                Route::post('create', ['as' => 'sanatorium.hoofmanager.api.examinations.create', 'uses' => 'ExaminationsController@store']);
+                Route::post('create', ['as' => 'sanatorium.hoofmanager.api.findings.create', 'uses' => 'FindingsController@store']);
 
-                Route::get('grid', ['as' => 'sanatorium.hoofmanager.api.examinations.all', 'uses' => 'ExaminationsController@grid']);
+                Route::get('grid', ['as' => 'sanatorium.hoofmanager.api.findings.all', 'uses' => 'FindingsController@grid']);
 
-                Route::get('grid/simple', ['as' => 'sanatorium.hoofmanager.api.examinations.all.simple', 'uses' => 'ExaminationsController@simple']);
+                Route::get('grid/simple', ['as' => 'sanatorium.hoofmanager.api.findings.all.simple', 'uses' => 'FindingsController@simple']);
 
             });
 

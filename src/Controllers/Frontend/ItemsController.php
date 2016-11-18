@@ -31,9 +31,7 @@ class ItemsController extends Controller {
 
 		$items = app('sanatorium.hoofmanager.items');
 
-		$examinations = app('sanatorium.hoofmanager.examination')->orderBy('created_at', 'DESC');
-
-		$examinations = $examinations->where('item_id', $id)->get();
+		$findings = app('sanatorium.hoofmanager.finding')->where('item_id', $id)->orderBy('created_at', 'DESC')->get();
 
 		if ( $vet->isAdmin() ) {
 
@@ -59,7 +57,7 @@ class ItemsController extends Controller {
 			$item = $items->createModel();
 		}
 
-		return view('sanatorium/hoofmanager::items/detail', compact('item', 'examinations', 'houses', 'house', 'diseases', 'treatments', 'vet'));
+		return view('sanatorium/hoofmanager::items/detail', compact('item', 'findings', 'houses', 'house', 'diseases', 'treatments', 'vet'));
 	}
 
 	public function update($id)
@@ -103,19 +101,15 @@ class ItemsController extends Controller {
 
 		$vet = Vet::getVet();
 
-		$examinations = app('sanatorium.hoofmanager.examination');
-
 		$findings = app('sanatorium.hoofmanager.finding');
 
-		$new_examination = ['user_id' => $vet->id, 'item_id' => $id, 'created_at' => $data['created_at']];
+        $new_finding = $data;
 
-		list($messages, $examination) = $examinations->store(null, $new_examination);
+        $new_finding['user_id'] = $vet->id;
 
-		$new_finding = $data;
+        $new_finding['item_id'] = $id;
 
-		$new_finding['examination_id'] = $examination->id;
-
-		list($messages, $finding) = $findings->store(null, $new_finding);
+        list($messages, $finding) = $findings->store(null, $new_finding);
 
 		return redirect()->back();
 

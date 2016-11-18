@@ -188,18 +188,14 @@ $(function(){
 				</td>
 
 				<td>
-					
-					@foreach ( $item->examinations as $examination )
 
-					@foreach ( $examination->findings as $finding )
+					@foreach ( $item->findings as $finding )
 
 					@if ( is_object($finding->disease) )
 
 					{{ $finding->disease->name }}, 
 
 					@endif
-
-					@endforeach
 
 					@endforeach
 
@@ -213,9 +209,7 @@ $(function(){
 
 				<td>
 					
-					@foreach ( $item->examinations as $examination )
-
-					@foreach ( $examination->findings as $finding )
+					@foreach ( $item->findings as $finding )
 
 					@if ( $finding->check_date != '0000-00-00 00:00:00' && isset($finding->check_date) )
 
@@ -235,25 +229,19 @@ $(function(){
 
 					@endforeach
 
-					@endforeach
-
 				</td>
 
 				<td>
 
 					<?php $diseases_array = []; ?>
 
-					@foreach ( $item->examinations as $examination )
-
-					@foreach ( $examination->findings as $finding )
+					@foreach ( $item->findings as $finding )
 
 					@if ( is_object($finding->disease) )
 
 					<?php array_push($diseases_array, $finding->disease->name); ?>
 
 					@endif
-
-					@endforeach
 
 					@endforeach
 
@@ -265,17 +253,13 @@ $(function(){
 
 					<?php $treatment_array = []; ?>
 
-					@foreach ( $item->examinations as $examination )
-
-					@foreach ( $examination->findings as $finding )
+					@foreach ( $item->findings as $finding )
 
 					@if ( is_object($finding->treatment) )
 
 					<?php array_push($treatment_array, $finding->treatment->name); ?>
 
 					@endif
-
-					@endforeach
 
 					@endforeach
 

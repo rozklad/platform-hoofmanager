@@ -20,6 +20,7 @@ class CreateFindingsTable extends Migration {
 			$table->integer('subpart_id')->nullable();
 			$table->integer('treatment_id')->nullable();
 			$table->integer('examination_id');
+            $table->integer('item_id');
 			$table->timestamp('check_date')->nullable();
 			$table->string('type')->nullable();
 			$table->timestamps();

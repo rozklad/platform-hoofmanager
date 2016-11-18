@@ -51,8 +51,6 @@ class HousesController extends Controller {
 
         $items = app('sanatorium.hoofmanager.items');
 
-        $examinations = app('sanatorium.hoofmanager.examination');
-
         $vet = Vet::getVet();
 
         if ( $id )
@@ -68,9 +66,7 @@ class HousesController extends Controller {
 
         $houseid = $house->id;
 
-        $findingsByHouse = app('sanatorium.hoofmanager.finding')->whereHas('examination', function($q) use ($houseid) {
-
-            return $q->whereHas('item', function($q) use ($houseid) {
+        $findingsByHouse = app('sanatorium.hoofmanager.finding')->whereHas('item', function($q) use ($houseid) {
 
                 return $q->whereHas('houses', function($q) use ($houseid) {
 
@@ -78,15 +74,13 @@ class HousesController extends Controller {
 
                 });
 
-            });
-
         })->whereNotNull('check_date')->where('check_date', '!=' , '0000-00-00 00:00:00')->orderBy('check_date', 'ASC')->get();
 
         $checks = [];
 
         foreach ( $findingsByHouse as $finding ) {
 
-            $item_id = $examinations->where('id', $finding->examination_id)->first()->item_id;
+            $item_id = $finding->item_id;
 
             $finding_item = $items->where('id', $item_id)->first();
 

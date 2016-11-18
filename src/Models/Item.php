@@ -39,10 +39,10 @@ class Item extends Model implements EntityInterface {
 		return $this->belongsToMany('Sanatorium\Hoofmanager\Models\Part', 'item_parts', 'item_id', 'part_id');
 	}
 
-	public function examinations()
-	{
-		return $this->hasMany('Sanatorium\Hoofmanager\Models\Examination', 'item_id');
-	}
+    public function findings()
+    {
+        return $this->hasMany('Sanatorium\Hoofmanager\Models\Finding', 'item_id');
+    }
 
 	public function houses()
 	{

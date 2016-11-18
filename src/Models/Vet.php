@@ -13,7 +13,7 @@ class Vet extends BaseUser {
 
 	public function examinations()
 	{
-		return $this->hasMany('Sanatorium\Hoofmanager\Models\Examination', 'user_id');
+		return $this->hasMany('Sanatorium\Hoofmanager\Models\Finding', 'user_id');
 	}
 
 	public static function getVet()

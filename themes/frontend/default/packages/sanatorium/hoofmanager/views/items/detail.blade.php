@@ -565,10 +565,7 @@
 
                         </form>
 
-
-                        @foreach( $examinations as $examination )
-
-                            @foreach( $examination->findings as $finding )
+                            @foreach( $findings as $finding )
 
                                 <form method="POST">
 
@@ -706,8 +703,6 @@
 
                             @endforeach
 
-                        @endforeach
-
                         </tbody>
 
                     </table>
@@ -727,9 +722,7 @@
                         </thead>
                         <tbody>
 
-                        @foreach( $examinations as $examination )
-
-                            @foreach( $examination->findings as $finding )
+                            @foreach( $findings as $finding )
 
                                 @if ( $finding->check_date && $finding->check_date != "0000-00-00 00:00:00" )
 
@@ -816,8 +809,6 @@
                                 @endif
 
                             @endforeach
-
-                        @endforeach
 
                         </tbody>
 

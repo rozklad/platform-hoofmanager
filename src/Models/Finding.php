@@ -36,11 +36,6 @@ class Finding extends Model implements EntityInterface {
 	 */
 	protected static $entityNamespace = 'sanatorium/hoofmanager.finding';
 
-	public function examination()
-	{
-		return $this->belongsTo('Sanatorium\Hoofmanager\Models\Examination', 'examination_id');
-	}
-
 	public function part()
 	{
 		return $this->belongsTo('Sanatorium\Hoofmanager\Models\Part', 'part_id', 'id');
@@ -60,5 +55,10 @@ class Finding extends Model implements EntityInterface {
 	{
 		return $this->belongsTo('Sanatorium\Hoofmanager\Models\Treatment', 'treatment_id');
 	}
+
+	public function item()
+    {
+        return $this->belongsTo('Sanatorium\Hoofmanager\Models\Item', 'item_id');
+    }
 
 }

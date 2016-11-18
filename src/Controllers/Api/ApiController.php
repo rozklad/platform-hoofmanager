@@ -3163,15 +3163,11 @@ examinations: [
 
         // Top Diseases
 
-        $findings = app('sanatorium.hoofmanager.finding')->whereHas('examination', function($q) use ($houseid) {
+        $findings = app('sanatorium.hoofmanager.finding')->whereHas('item', function($q) use ($houseid) {
 
-            return $q->whereHas('item', function($q) use ($houseid) {
+            return $q->whereHas('houses', function($q) use ($houseid) {
 
-                return $q->whereHas('houses', function($q) use ($houseid) {
-
-                    return $q->where('houses.id', $houseid);
-
-                });
+                return $q->where('houses.id', $houseid);
 
             });
 
@@ -3257,25 +3253,19 @@ examinations: [
 
         foreach ( $items as $item ) {
 
-            $exam_for_item = $item->examinations()->get();
+            $find_for_item = $item->findings()->get();
 
-            foreach ( $exam_for_item as $exam ) {
+            foreach ( $find_for_item as $key => $find ) {
 
-                $find_for_item = $exam->findings()->get();
+                if ( is_object($find->disease()->first() ) ) {
 
-                foreach ( $find_for_item as $key => $find ) {
+                    if ( isset($items_findings[$item->item_number]) ) {
 
-                    if ( is_object($find->disease()->first() ) ) {
+                        $items_findings[$item->item_number] ++;
 
-                        if ( isset($items_findings[$item->item_number]) ) {
+                    } else {
 
-                            $items_findings[$item->item_number] ++;
-
-                        } else {
-
-                            $items_findings[$item->item_number] = 1;
-
-                        }
+                        $items_findings[$item->item_number] = 1;
 
                     }
 
@@ -3378,15 +3368,7 @@ examinations: [
 
         $item = app('sanatorium.hoofmanager.items')->find($itemid);
 
-        $examinations = $item->examinations()->get();
-
-        $findings = [];
-
-        foreach ( $examinations as $examination ) {
-
-            array_push($findings, $examination->findings()->first());
-
-        }
+        $findings = $item->findings()->get();
 
         foreach ( $findings as $finding ) {
 
