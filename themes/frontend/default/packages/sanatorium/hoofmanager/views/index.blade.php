@@ -187,22 +187,21 @@ $('#houses-search').bind('typeahead:select', function(ev, suggestion) {
 				<th>Akce</th>
 			</thead>
 			<tbody>
-				@foreach( $examinations as $examination )
-				@foreach( $examination->findings as $finding )
+				@foreach( $findings as $finding )
 				<tr>
 					<td>
-						@if ( is_object($examination->item) )
-						{{ $examination->item->item_number }}
-						<a href="{{ route('admin.sanatorium.hoofmanager.items.edit', $examination->item->id) }}">
+						@if ( is_object($finding->item) )
+						{{ $finding->item->item_number }}
+						<a href="{{ route('admin.sanatorium.hoofmanager.items.edit', $finding->item->id) }}">
 							<i class="fa fa-edit"></i>
 						</a>
-						( {{ $examination->item->collar }} )
+						( {{ $finding->item->collar }} )
 						@endif
 					</td>
 					<td>
 						{{ $finding->type }}:
 
-						@if ( is_object($examination->disease) )
+						@if ( is_object($finding->disease) )
 						{{ $finding->disease->name }}
 						<a href="{{ route('admin.sanatorium.hoofmanager.diseases.edit', $finding->disease->id) }}">
 							<i class="fa fa-edit"></i>
@@ -232,8 +231,8 @@ $('#houses-search').bind('typeahead:select', function(ev, suggestion) {
 						@endif
 					</td>
 					<td>
-						@if ( is_object($examination->item) )
-						<?php $house = $examination->item->houses()->first(); ?>
+						@if ( is_object($finding->item) )
+						<?php $house = $finding->item->houses()->first(); ?>
 						@if ( is_object($house) )
 						{{ $house->label }}
 						<a href="{{ route('admin.sanatorium.hoofmanager.houses.edit', $house->id) }}">
@@ -251,7 +250,6 @@ $('#houses-search').bind('typeahead:select', function(ev, suggestion) {
 						</a>
 					</td>
 				</tr>
-				@endforeach
 				@endforeach
 			</tbody>
 		</table>

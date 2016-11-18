@@ -26,8 +26,8 @@ class HoofController extends Controller {
 			return redirect()->route('user.login');
 
 		$vet = Vet::getVet();
-
-		$examinations = $vet->examinations()->orderBy('created_at', 'DESC')->get();
+        
+        $findings = app('sanatorium.hoofmanager.finding')->where('user_id', $vet->id)->get();
 
 		if ( $vet->isAdmin() ) {
 
@@ -39,7 +39,7 @@ class HoofController extends Controller {
 
 		}
 
-		return view('sanatorium/hoofmanager::index', compact('examinations', 'houses', 'vet'));
+		return view('sanatorium/hoofmanager::index', compact('findings', 'houses', 'vet'));
 	}
 
 	public function start()
