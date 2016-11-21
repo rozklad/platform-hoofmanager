@@ -26,6 +26,24 @@ class VetController extends ApiController {
 
         $treatments = app('sanatorium.hoofmanager.treatment')->get();
 
+        $items = app('sanatorium.hoofmanager.items')->get();
+
+        $item_numbers = [];
+
+        foreach( $items as $item ) {
+            if ( $item->item_number )
+                array_push($item_numbers, $item->item_number);
+        }
+
+        $houses = app('sanatorium.hoofmanager.houses')->get();
+
+        $cattle_numbers = [];
+
+        foreach ( $houses as $house ) {
+            if ( $house->cattle_number )
+                array_push($cattle_numbers, $house->cattle_number);
+        }
+
 
         if ($user = Sentinel::authenticate($credentials))
         {
@@ -34,6 +52,8 @@ class VetController extends ApiController {
             $this->result = $vet;
             $this->result->diseases = $diseases;
             $this->result->treatments = $treatments;
+            $this->result->items_numbers = $item_numbers;
+            $this->result->cattles_numbers = $cattle_numbers;
 
             if ( $vet->isAdmin() ) {
                 $houses = app('sanatorium.hoofmanager.houses')->get();
@@ -71,6 +91,24 @@ class VetController extends ApiController {
         // @todo make more efficient
         $vet = Vet::find($id);
 
+        $items = app('sanatorium.hoofmanager.items')->get();
+
+        $item_numbers = [];
+
+        foreach( $items as $item ) {
+            if ( $item->item_number )
+            array_push($item_numbers, $item->item_number);
+        }
+
+        $houses = app('sanatorium.hoofmanager.houses')->get();
+
+        $cattle_numbers = [];
+
+        foreach ( $houses as $house ) {
+            if ( $house->cattle_number )
+            array_push($cattle_numbers, $house->cattle_number);
+        }
+
         if ( $vet->isAdmin() ) {
 
             $houses = app('sanatorium.hoofmanager.houses')->get();
@@ -101,6 +139,8 @@ class VetController extends ApiController {
         $vet->findings = $findings;
         $vet->diseases = $diseases;
         $vet->treatments = $treatments;
+        $vet->items_numbers = $item_numbers;
+        $vet->cattles_numbers = $cattle_numbers;
 
         return $vet;
     }

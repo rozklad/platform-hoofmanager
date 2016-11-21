@@ -133,8 +133,14 @@ class HousesController extends Controller {
 
         $this->items = app('sanatorium.hoofmanager.items');
 
+        $vet = Vet::getVet();
+
+        $new_house = request()->house;
+
+        $new_house['user_id'] = $vet->id;
+
         // Store the houses
-        list($messages, $actual_house) = $this->houses->store($id, request()->house);
+        list($messages, $actual_house) = $this->houses->store($id, $new_house);
 
         foreach (request()->item as $item) {
 
