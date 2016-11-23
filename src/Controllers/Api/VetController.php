@@ -63,9 +63,19 @@ class VetController extends ApiController {
                 $houses = app('sanatorium.hoofmanager.houses')->where('user_id', $vet->id)->get();
             }
 
+            foreach ( $houses as $house ) {
+
+                foreach ( $house->items as $item ) {
+
+                    $item->findings = $item->findings()->get();
+
+                }
+
+            }
+
             $this->result->houses = $houses;
 
-            $findings = [];
+            /*$findings = [];
 
             foreach ( $findingsAll as $finding ) {
 
@@ -75,7 +85,7 @@ class VetController extends ApiController {
 
             }
 
-            $this->result->findings = $findings;
+            $this->result->findings = $findings;*/
 
         }
         else
@@ -97,7 +107,7 @@ class VetController extends ApiController {
 
         foreach( $items as $item ) {
             if ( $item->item_number )
-            array_push($item_numbers, $item->item_number);
+                array_push($item_numbers, $item->item_number);
         }
 
         $houses = app('sanatorium.hoofmanager.houses')->get();
@@ -106,7 +116,7 @@ class VetController extends ApiController {
 
         foreach ( $houses as $house ) {
             if ( $house->cattle_number )
-            array_push($cattle_numbers, $house->cattle_number);
+                array_push($cattle_numbers, $house->cattle_number);
         }
 
         if ( $vet->isAdmin() ) {
@@ -121,22 +131,33 @@ class VetController extends ApiController {
 
         }
 
-        $findings = [];
+        foreach ( $houses as $house ) {
+
+            foreach ( $house->items as $item ) {
+
+                $item->findings = $item->findings()->get();
+
+            }
+
+        }
+
+        /*$findings = [];
 
         foreach ( $findingsAll as $finding ) {
 
-            $item_number = app('sanatorium.hoofmanager.items')->find($finding->item_id)->item_number;
+            $item = app('sanatorium.hoofmanager.items')->find($finding->item_id);
 
-            $findings[$item_number][] = $finding;
+            if ( is_object($item) )
+                $findings[$item->item_number][] = $finding;
 
-        }
+        }*/
 
         $diseases = app('sanatorium.hoofmanager.diseases')->get();
 
         $treatments = app('sanatorium.hoofmanager.treatment')->get();
 
         $vet->houses = $houses;
-        $vet->findings = $findings;
+        //$vet->findings = $findings;
         $vet->diseases = $diseases;
         $vet->treatments = $treatments;
         $vet->items_numbers = $item_numbers;

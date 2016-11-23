@@ -2,6 +2,7 @@
 
 use Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface;
 use Sanatorium\Hoofmanager\Repositories\Finding\FindingRepositoryInterface;
+use Sanatorium\Hoofmanager\Repositories\Items\ItemsRepositoryInterface;
 
 use Input;
 
@@ -37,16 +38,20 @@ class FindingsController extends ApiController {
      *
      * @param  \Sanatorium\Hoofmanager\Repositories\Finding\FindingRepositoryInterface  $findings
      * @param  \Sanatorium\Hoofmanager\Repositories\Apilog\ApilogRepositoryInterface $apilogs
+     * @param  \Sanatorium\Hoofmanager\Repositories\Items\ItemsRepositoryInterface $items
      * @return void
      */
     public function __construct(ApilogRepositoryInterface $apilogs,
-                                FindingRepositoryInterface $findings)
+                                FindingRepositoryInterface $findings,
+                                ItemsRepositoryInterface $items)
     {
         parent::__construct($apilogs);
 
         $this->findings = $findings;
 
         $this->apilogs = $apilogs;
+
+        $this->items = $items;
     }
 
     /**
@@ -227,9 +232,21 @@ class FindingsController extends ApiController {
     {
         $data = request()->all();
 
-        $item_id = app('sanatorium.hoofmanager.items')->where('item_number', $data['item_id'])->first()->id;
+        $item = app('sanatorium.hoofmanager.items')->where('item_number', $data['item_id'])->first();
+
+        $item_id = $item->id;
 
         $data['item_id'] = $item_id;
+
+        if ( $data['disease_id'] == -1 )
+            $data['disease_id'] = 0;
+
+        if ( $data['treatment_id'] == -1 )
+            $data['treatment_id'] = 0;
+
+        if ( isset($data['sick']) )
+            list($messages, $item_stored) = $this->items->store($item_id, ['sick' => $data['sick']]);
+            unset($data['sick']);
 
         // Store the finding
         list($messages, $finding) = $this->findings->store($id, $data);

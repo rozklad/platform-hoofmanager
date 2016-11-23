@@ -29,6 +29,7 @@ class Finding extends Model implements EntityInterface {
 		'part',
 		'subpart',
 		'disease',
+        'treatment',
 	];
 
 	/**
