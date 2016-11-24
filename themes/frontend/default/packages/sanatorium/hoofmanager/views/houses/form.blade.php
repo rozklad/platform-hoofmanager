@@ -451,7 +451,7 @@
 
             // Ajax call for charts data
 
-            /*$.ajax({
+            $.ajax({
              method: "GET",
              url: "{{ route('sanatorium.hoofmanager.api.housestats', ['id' => $house->id]) }}",
              }).done(function( data ) {
