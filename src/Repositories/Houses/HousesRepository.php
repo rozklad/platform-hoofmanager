@@ -205,7 +205,7 @@ class HousesRepository implements HousesRepositoryInterface {
 
             }
 
-            $houses->items()->sync($items_to_save);
+            $houses->items()->sync($items_to_save, false);
 
             // Fire the 'sanatorium.hoofmanager.houses.updated' event
             $this->fireEvent('sanatorium.hoofmanager.houses.updated', [ $houses ]);
