@@ -12,12 +12,17 @@ class AlterExaminationCleanupTable extends Migration {
      */
     public function up()
     {
-        Schema::table('findings', function (Blueprint $table)
+        try
         {
-            $table->integer('item_id')->after('id');
-            $table->integer('user_id')->after('id');
-            $table->dropColumn('examination_id');
-        });
+            Schema::table('findings', function (Blueprint $table)
+            {
+                $table->integer('item_id')->after('id');
+                $table->integer('user_id')->after('id');
+                $table->dropColumn('examination_id');
+            });
+        } catch (\RuntimeException $e) {
+            // already changed
+        }
 
         // Get data
         try
