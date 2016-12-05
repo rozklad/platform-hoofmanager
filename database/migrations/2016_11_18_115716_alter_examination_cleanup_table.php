@@ -12,27 +12,36 @@ class AlterExaminationCleanupTable extends Migration {
      */
     public function up()
     {
-        $examinations = app('sanatorium.hoofmanager.examination')->get();
-
-        Schema::table('findings', function(Blueprint $table)
+        Schema::table('findings', function (Blueprint $table)
         {
             $table->integer('item_id')->after('id');
             $table->integer('user_id')->after('id');
             $table->dropColumn('examination_id');
         });
 
-        foreach ( $examinations as $examination ) {
+        // Get data
+        try
+        {
+            $examinations = app('sanatorium.hoofmanager.examination')->get();
 
-            foreach ( $examination->findings()->get() as $finding  ) {
+            foreach ( $examinations as $examination )
+            {
 
-                $finding->item_id = $examination->item_id;
+                foreach ( $examination->findings()->get() as $finding )
+                {
 
-                $finding->user_id = $examination->user_id;
+                    $finding->item_id = $examination->item_id;
 
-                $finding->save();
+                    $finding->user_id = $examination->user_id;
+
+                    $finding->save();
+
+                }
 
             }
 
+        } catch (\ReflectionException $e) {
+            // sanatorium.hoofmanager.examination do not exist anymore
         }
 
         Schema::drop('examinations');
